@@ -195,7 +195,7 @@ protected:
     bool init() override {
         if(!Popup::init(330.f,220.f)) return false;
         setTitle("Smart Controls");
-        auto info=CCLabelBMFont::create("Customize touch buttons, placement and opacity", "goldFont.fnt");
+        auto info=CCLabelBMFont::create("Touch layout, personal profiles and settings", "goldFont.fnt");
         info->setScale(.4f); info->setPosition({m_size.width/2,m_size.height-55.f}); m_mainLayer->addChild(info);
         auto menu=CCMenu::create(); menu->setPosition({m_size.width/2,m_size.height/2-5.f});
         auto settings=ButtonSprite::create("Configure Controls","goldFont.fnt","GJ_button_01.png",.75f);
@@ -207,12 +207,60 @@ protected:
             Mod::get()->setSettingValue("smart-controls-enabled",!current);
             FLAlertLayer::create("Smart Controls","Setting changed. Re-enter gameplay to recreate the on-screen buttons.","OK")->show();
         });
-        toggle->setPosition({0,-48.f}); menu->addChild(toggle);
+        toggle->setPosition({0,-65.f}); menu->addChild(toggle);
         m_mainLayer->addChild(menu);
         return true;
     }
 public:
     static SmartControlsPopup* create(){auto ret=new SmartControlsPopup();if(ret->init()){ret->autorelease();return ret;}delete ret;return nullptr;}
+};
+
+
+class GlobalProfilesPopup : public Popup {
+    static std::vector<std::string> keys() {
+        return {"smart-controls-enabled","smart-p1-enabled","smart-p2-enabled",
+                "smart-button-size","smart-button-opacity","smart-p1-x","smart-p1-y",
+                "smart-p2-x","smart-p2-y","instant-level-id"};
+    }
+    static void saveSlot(int slot) {
+        auto m=Mod::get(); std::vector<std::string> data;
+        for(auto const& k:keys()) {
+            if(k=="instant-level-id") data.push_back(m->getSettingValue<std::string>(k));
+            else if(k.find("-enabled")!=std::string::npos) data.push_back(m->getSettingValue<bool>(k)?"1":"0");
+            else data.push_back(std::to_string(m->getSettingValue<float>(k)));
+        }
+        m->setSavedValue("profile-"+std::to_string(slot),data);
+    }
+    static void applySlot(int slot) {
+        auto m=Mod::get(); auto data=m->getSavedValue<std::vector<std::string>>("profile-"+std::to_string(slot),{});
+        auto k=keys(); if(data.size()!=k.size()) {FLAlertLayer::create("Profiles","This profile slot is empty.","OK")->show();return;}
+        for(size_t i=0;i<k.size();++i) {
+            if(k[i]=="instant-level-id") m->setSettingValue(k[i],data[i]);
+            else if(k[i].find("-enabled")!=std::string::npos) m->setSettingValue(k[i],data[i]=="1");
+            else { try {m->setSettingValue(k[i],std::stof(data[i]));}catch(...){} }
+        }
+        FLAlertLayer::create("Profiles","Profile applied. Re-enter gameplay to refresh Smart Controls.","OK")->show();
+    }
+protected:
+    bool init() override {
+        if(!Popup::init(360.f,290.f)) return false;
+        setTitle("Global Profiles");
+        auto info=CCLabelBMFont::create("Save or apply shared-device control layouts","goldFont.fnt");
+        info->setScale(.38f); info->setPosition({m_size.width/2,m_size.height-42});m_mainLayer->addChild(info);
+        auto menu=CCMenu::create(); menu->setPosition({m_size.width/2,80});
+        for(int s=1;s<=3;s++) {
+            auto label="Profile "+std::to_string(s);
+            auto save=CCMenuItemExt::createSpriteExtra(ButtonSprite::create(("Save "+label).c_str(),"goldFont.fnt","GJ_button_01.png",.55f),[s](CCObject*){saveSlot(s);FLAlertLayer::create("Profiles","Profile saved.","OK")->show();});
+            auto load=CCMenuItemExt::createSpriteExtra(ButtonSprite::create(("Apply "+label).c_str(),"goldFont.fnt","GJ_button_02.png",.55f),[s](CCObject*){applySlot(s);});
+            save->setPosition({-90.f,30.f-(s-1)*58.f});load->setPosition({90.f,30.f-(s-1)*58.f});menu->addChild(save);menu->addChild(load);
+        }
+        m_mainLayer->addChild(menu);
+        auto note=CCLabelBMFont::create("Slots store Smart Controls and selected scalar settings","goldFont.fnt");
+        note->setScale(.32f);note->setPosition({m_size.width/2,18});note->setColor({180,195,220});m_mainLayer->addChild(note);
+        return true;
+    }
+public:
+    static GlobalProfilesPopup* create(){auto r=new GlobalProfilesPopup();if(r->init()){r->autorelease();return r;}delete r;return nullptr;}
 };
 
 class NewKeybindsHubPopup : public Popup {
