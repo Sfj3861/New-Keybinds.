@@ -3,11 +3,11 @@
   "gd": {
     "android": "2.2091"
   },
-  "version": "0.2.0",
+  "version": "0.3.0",
   "id": "Sfj3861.new-keybinds",
   "name": "New Keybinds",
   "developer": "Sfj3861",
-  "description": "Configurable gameplay keyboard controls for Geometry Dash on Android.",
+  "description": "Configurable gameplay and editor keyboard controls for Geometry Dash on Android.",
   "links": {
     "source": "https://github.com/Sfj3861/New-Keybinds."
   },
@@ -22,46 +22,82 @@
       "description": "Primary gameplay input. Multiple keys can be assigned.",
       "type": "keybind",
       "category": "gameplay",
-      "default": [
-        "Space",
-        "W"
-      ]
+      "default": ["Space", "W"]
     },
     "jump-p2": {
       "name": "Jump (Player 2)",
       "description": "Secondary gameplay input. Multiple keys can be assigned.",
       "type": "keybind",
       "category": "gameplay",
-      "default": [
-        "Up"
-      ]
+      "default": ["Up"]
     },
     "place-checkpoint": {
       "name": "Place Checkpoint",
       "description": "Places a checkpoint in Practice Mode.",
       "type": "keybind",
       "category": "gameplay",
-      "default": [
-        "Z"
-      ]
+      "default": ["Z"]
     },
     "delete-checkpoint": {
       "name": "Delete Checkpoint",
       "description": "Deletes the latest checkpoint in Practice Mode.",
       "type": "keybind",
       "category": "gameplay",
-      "default": [
-        "X"
-      ]
+      "default": ["X"]
     },
     "restart-level": {
       "name": "Restart Level",
       "description": "Restarts the current level.",
       "type": "keybind",
       "category": "gameplay",
-      "default": [
-        "R"
-      ]
+      "default": ["R"]
+    },
+    "editor-title": {
+      "name": "Editor",
+      "description": "Custom shortcuts for the level editor.",
+      "type": "title"
+    },
+    "move-obj-up": {
+      "name": "Move Selection Up",
+      "description": "Moves selected objects up using the native editor command.",
+      "type": "keybind",
+      "category": "editor",
+      "default": ["W"]
+    },
+    "move-obj-left": {
+      "name": "Move Selection Left",
+      "description": "Moves selected objects left using the native editor command.",
+      "type": "keybind",
+      "category": "editor",
+      "default": ["A"]
+    },
+    "move-obj-down": {
+      "name": "Move Selection Down",
+      "description": "Moves selected objects down using the native editor command.",
+      "type": "keybind",
+      "category": "editor",
+      "default": ["S"]
+    },
+    "move-obj-right": {
+      "name": "Move Selection Right",
+      "description": "Moves selected objects right using the native editor command.",
+      "type": "keybind",
+      "category": "editor",
+      "default": ["D"]
+    },
+    "rotate-ccw": {
+      "name": "Rotate 90° Left",
+      "description": "Rotates selected objects counter-clockwise.",
+      "type": "keybind",
+      "category": "editor",
+      "default": ["Q"]
+    },
+    "rotate-cw": {
+      "name": "Rotate 90° Right",
+      "description": "Rotates selected objects clockwise.",
+      "type": "keybind",
+      "category": "editor",
+      "default": ["E"]
     }
   }
 }
