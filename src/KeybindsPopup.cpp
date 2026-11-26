@@ -1,55 +1,79 @@
 #include <Geode/Geode.hpp>
 #include <Geode/ui/Popup.hpp>
-#include <Geode/ui/GeodeUI.hpp>
+#include <Geode/ui/GeodeUI.hpp>\n#include <Geode/binding/LevelBrowserLayer.hpp>\n#include <Geode/binding/GJSearchObject.hpp>\n#include <Geode/binding/MenuLayer.hpp>\n#include <Geode/binding/PlayLayer.hpp>\n#include <Geode/binding/FLAlertLayer.hpp>
 
 using namespace geode::prelude;
 
 class InstantActionPopup : public Popup {
 protected:
     bool init() override {
-        if (!Popup::init(380.f, 300.f)) return false;
+        if (!Popup::init(390.f, 315.f)) return false;
         setTitle("Instant Actions");
 
-        auto header = CCLabelBMFont::create("Choose an action context", "goldFont.fnt");
-        header->setScale(.5f);
-        header->setPosition({m_size.width / 2, m_size.height - 48.f});
-        m_mainLayer->addChild(header);
-
-        auto info = CCLabelBMFont::create("Context selected: none", "goldFont.fnt");
-        info->setScale(.38f);
-        info->setPosition({m_size.width / 2, 55.f});
-        info->setColor({180, 200, 255});
-        m_mainLayer->addChild(info);
-
-        const char* contexts[] = {
-            "Gameplay", "Practice", "Editor",
-            "Editor - Create", "Editor - Edit", "Editor - Delete",
-            "Pause Menu", "Main Menu", "Level Select"
-        };
+        auto subtitle = CCLabelBMFont::create("Select an action", "goldFont.fnt");
+        subtitle->setScale(.48f);
+        subtitle->setPosition({m_size.width / 2, m_size.height - 48.f});
+        m_mainLayer->addChild(subtitle);
 
         auto menu = CCMenu::create();
-        menu->setPosition({m_size.width / 2, m_size.height / 2 - 5.f});
-        menu->setContentSize({m_size.width - 40.f, 150.f});
+        menu->setPosition({m_size.width / 2, m_size.height / 2 - 2.f});
+
+        struct ActionEntry { char const* title; char const* texture; };
+        ActionEntry const actions[] = {
+            {"Gameplay", "GJ_button_01.png"},
+            {"Practice", "GJ_button_02.png"},
+            {"Editor", "GJ_button_03.png"},
+            {"Editor - Create", "GJ_button_04.png"},
+            {"Editor - Edit", "GJ_button_05.png"},
+            {"Editor - Delete", "GJ_button_06.png"},
+            {"Pause Menu", "GJ_button_01.png"},
+            {"Main Menu", "GJ_button_02.png"},
+            {"Level Select", "GJ_button_03.png"}
+        };
 
         for (int i = 0; i < 9; ++i) {
-            auto label = CCLabelBMFont::create(contexts[i], "goldFont.fnt");
-            label->setScale(.42f);
-            auto item = CCMenuItemExt::createSpriteExtra(label, [info, context = std::string(contexts[i])](CCObject*) {
-                info->setString(("Selected context: " + context).c_str());
+            auto sprite = ButtonSprite::create(actions[i].title, "goldFont.fnt", actions[i].texture, .62f);
+            auto item = CCMenuItemExt::createSpriteExtra(sprite, [i](CCObject*) {
+                // Gameplay and Practice both locate the requested online level directly.
+                // Practice mode itself is selected after opening the level's info page.
+                if (i == 0 || i == 1 || i == 8) {
+                    auto search = GJSearchObject::create(
+                        SearchType::Type19, "6508283&gameVersion=22"
+                    );
+                    switchToScene(LevelBrowserLayer::scene(search));
+                    return;
+                }
+                if (i == 6) {
+                    if (auto play = PlayLayer::get()) {
+                        play->pauseGame(true);
+                    } else {
+                        FLAlertLayer::create("Instant Actions", "There is no active level to pause.", "OK")->show();
+                    }
+                    return;
+                }
+                if (i == 7) {
+                    switchToScene(MenuLayer::scene(false));
+                    return;
+                }
+                // Editor actions open the user's levels list, from which the editor can be entered.
+                auto search = GJSearchObject::create(SearchType::MyLevels, "");
+                switchToScene(LevelBrowserLayer::scene(search));
             });
-            item->setContentSize({110.f, 30.f});
-            item->setPosition({(i % 3) * 115.f - 115.f, (1 - i / 3) * 40.f});
+            item->setPosition({(i % 3 - 1) * 116.f, (1 - i / 3) * 48.f});
             menu->addChild(item);
         }
 
+        menu->setContentSize({350.f, 160.f});
+        menu->setLayout(AxisLayout::create()->setAxis(Axis::Column)->setGap(8.f));
+        // Explicit grid positions are retained; each item has a real ButtonSprite hitbox.
         m_mainLayer->addChild(menu);
 
         auto note = CCLabelBMFont::create(
-            "Context selection only; execution is not implemented yet", "goldFont.fnt"
+            "Gameplay opens online level 6508283", "goldFont.fnt"
         );
-        note->setScale(.30f);
-        note->setPosition({m_size.width / 2, 20.f});
-        note->setColor({160, 160, 160});
+        note->setScale(.34f);
+        note->setPosition({m_size.width / 2, 22.f});
+        note->setColor({180, 195, 220});
         m_mainLayer->addChild(note);
         return true;
     }
@@ -57,10 +81,7 @@ protected:
 public:
     static InstantActionPopup* create() {
         auto ret = new InstantActionPopup();
-        if (ret->init()) {
-            ret->autorelease();
-            return ret;
-        }
+        if (ret->init()) { ret->autorelease(); return ret; }
         delete ret;
         return nullptr;
     }
