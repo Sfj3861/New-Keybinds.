@@ -3,11 +3,11 @@
   "gd": {
     "android": "2.2091"
   },
-  "version": "0.1.0",
+  "version": "0.2.0",
   "id": "Sfj3861.new-keybinds",
   "name": "New Keybinds",
   "developer": "Sfj3861",
-  "description": "Customizable gameplay keybinds for Geometry Dash on Android.",
+  "description": "Configurable gameplay keyboard controls for Geometry Dash on Android.",
   "links": {
     "source": "https://github.com/Sfj3861/New-Keybinds."
   },
@@ -19,7 +19,7 @@
     },
     "jump-p1": {
       "name": "Jump (Player 1)",
-      "description": "Primary gameplay input.",
+      "description": "Primary gameplay input. Multiple keys can be assigned.",
       "type": "keybind",
       "category": "gameplay",
       "default": [
@@ -29,11 +29,38 @@
     },
     "jump-p2": {
       "name": "Jump (Player 2)",
-      "description": "Secondary gameplay input.",
+      "description": "Secondary gameplay input. Multiple keys can be assigned.",
       "type": "keybind",
       "category": "gameplay",
       "default": [
         "Up"
+      ]
+    },
+    "place-checkpoint": {
+      "name": "Place Checkpoint",
+      "description": "Places a checkpoint in Practice Mode.",
+      "type": "keybind",
+      "category": "gameplay",
+      "default": [
+        "Z"
+      ]
+    },
+    "delete-checkpoint": {
+      "name": "Delete Checkpoint",
+      "description": "Deletes the latest checkpoint in Practice Mode.",
+      "type": "keybind",
+      "category": "gameplay",
+      "default": [
+        "X"
+      ]
+    },
+    "restart-level": {
+      "name": "Restart Level",
+      "description": "Restarts the current level.",
+      "type": "keybind",
+      "category": "gameplay",
+      "default": [
+        "R"
       ]
     }
   }
