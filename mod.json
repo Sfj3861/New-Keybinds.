@@ -3,11 +3,11 @@
   "gd": {
     "android": "2.2091"
   },
-  "version": "0.6.2-beta.1",
+  "version": "0.7.0-beta.1",
   "id": "sfj3861.new-keybinds",
   "name": "New Keybinds",
   "developer": "Sfj3861",
-  "description": "Gameplay keybinds, level-browser shortcuts, and basic mobile on-screen jump controls.",
+  "description": "Customizable gameplay bindings, instant actions and mobile Smart Controls.",
   "links": {
     "source": "https://github.com/Sfj3861/New-Keybinds."
   },
@@ -160,14 +160,126 @@
     },
     "smart-controls-title": {
       "name": "Smart Controls",
-      "description": "On-screen P1/P2 jump buttons for mobile gameplay.",
+      "description": "On-screen touch buttons configuration.",
       "type": "title"
     },
     "smart-controls-enabled": {
       "name": "Enable Smart Controls",
-      "description": "Show on-screen P1/P2 jump buttons during gameplay. Can also be toggled in the New Keybinds popup.",
       "type": "bool",
       "default": false
+    },
+    "instant-actions-title": {
+      "name": "Instant Actions",
+      "description": "Configurable shortcut keys for common actions.",
+      "type": "title"
+    },
+    "instant-gameplay": {
+      "name": "Open Gameplay Level",
+      "description": "Jump to the configured level browser query.",
+      "type": "keybind",
+      "category": "gameplay",
+      "default": [
+        "F1"
+      ]
+    },
+    "instant-practice": {
+      "name": "Open Practice",
+      "description": "Open the configured level browser query for practice selection.",
+      "type": "keybind",
+      "category": "gameplay",
+      "default": [
+        "F2"
+      ]
+    },
+    "instant-level-select": {
+      "name": "Level Select",
+      "type": "keybind",
+      "category": "universal",
+      "default": [
+        "F3"
+      ]
+    },
+    "instant-my-levels": {
+      "name": "My Levels",
+      "type": "keybind",
+      "category": "editor",
+      "default": [
+        "F4"
+      ]
+    },
+    "instant-pause": {
+      "name": "Pause / Resume menu",
+      "type": "keybind",
+      "category": "gameplay",
+      "default": [
+        "F5"
+      ]
+    },
+    "instant-main-menu": {
+      "name": "Main Menu",
+      "type": "keybind",
+      "category": "universal",
+      "default": [
+        "F6"
+      ]
+    },
+    "instant-level-id": {
+      "name": "Target Level ID",
+      "description": "Level ID used by the Gameplay/Practice actions.",
+      "type": "string",
+      "default": "6508283"
+    },
+    "smart-p1-enabled": {
+      "name": "Show P1 button",
+      "type": "bool",
+      "default": true
+    },
+    "smart-p2-enabled": {
+      "name": "Show P2 button",
+      "type": "bool",
+      "default": false
+    },
+    "smart-button-size": {
+      "name": "Button size",
+      "type": "float",
+      "default": 1,
+      "min": 0.5,
+      "max": 2
+    },
+    "smart-button-opacity": {
+      "name": "Button opacity",
+      "type": "float",
+      "default": 0.75,
+      "min": 0.2,
+      "max": 1
+    },
+    "smart-p1-x": {
+      "name": "P1 horizontal offset",
+      "type": "float",
+      "default": -65,
+      "min": -500,
+      "max": 500
+    },
+    "smart-p1-y": {
+      "name": "P1 vertical offset",
+      "type": "float",
+      "default": 82,
+      "min": -500,
+      "max": 500
+    },
+    "smart-p2-x": {
+      "name": "P2 horizontal offset",
+      "type": "float",
+      "default": -65,
+      "min": -500,
+      "max": 500
+    },
+    "smart-p2-y": {
+      "name": "P2 vertical offset",
+      "type": "float",
+      "default": 145,
+      "min": -500,
+      "max": 500
     }
   }
 }
