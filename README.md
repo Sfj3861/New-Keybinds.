@@ -4,26 +4,33 @@ An Android-focused Geometry Dash mod that adds configurable keyboard controls.
 
 ## Current development status
 
-**Prototype 0.2.0 — keyboard gameplay milestone**
+**Prototype 0.3.0 — gameplay and editor keyboard milestone**
 
 Implemented in source:
 
+### Gameplay
 - Player 1 jump input.
 - Player 2 jump input.
 - Place Practice Mode checkpoint.
 - Delete Practice Mode checkpoint.
 - Restart the current level.
-- Key assignments are declared as Geode `keybind` settings, so Geode provides key capture, persistence, and support for multiple keys per action.
-- Checkpoint and restart actions are forwarded to Geometry Dash's existing keyboard handlers.
+
+### Editor
+- Move selected objects up, left, down, and right.
+- Rotate selected objects counter-clockwise and clockwise.
+- Editor actions are forwarded through the native `EditorUI` keyboard handlers.
+- Editor shortcuts check whether another keyboard delegate or text-input/IME field owns input before handling a shortcut.
+
+Geode `keybind` settings provide key capture, saved assignments, and support for multiple keys per action.
 
 ## Current limitations
 
-- The custom New Keybinds window and its Library button are not implemented yet.
-- Editor shortcuts and navigation shortcuts are not implemented yet.
+- The custom New Keybinds window and its dedicated Library button are not implemented yet.
+- Navigation shortcuts are not implemented yet.
 - Controller support and Smart Controls are not implemented yet.
-- The current keybind controls are still exposed through Geode's mod settings.
+- Keybind configuration is currently exposed through Geode's mod settings.
 - Android device compatibility and runtime behavior still need to be tested on a real device.
-- This repository change has not been compiled against the target Android toolchain yet.
+- The repository changes have not yet been compiled against the target Android toolchain.
 
 ## Target
 
