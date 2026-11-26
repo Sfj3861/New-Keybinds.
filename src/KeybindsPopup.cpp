@@ -58,14 +58,21 @@ protected:
 public:
  static NewKeybindsPopup* create(){auto r=new NewKeybindsPopup();if(r->init()){r->autorelease();return r;}delete r;return nullptr;}
 };
-static void addNewKeybindsButton(CCScene* scene){
- auto layer=scene?scene->getChildByID("ModsLayer"):nullptr;
- auto menu=layer?layer->getChildByID("actions-menu"):nullptr;
- if(!menu||menu->getChildByID("new-keybinds-entry"))return;
- auto label=CCLabelBMFont::create("New Keybinds","goldFont.fnt");label->setScale(.5f);
- auto item=CCMenuItemExt::createSpriteExtra(label,[](CCObject*){NewKeybindsPopup::create()->show();});
- item->setID("new-keybinds-entry");menu->addChild(item);menu->updateLayout();
-}
-class $modify(NewKeybindsDirector,CCDirector){
- void setNextScene(){CCDirector::setNextScene();addNewKeybindsButton(getRunningScene());}
+#include <Geode/modify/MenuLayer.hpp>
+
+class $modify(NewKeybindsMenuLayer, MenuLayer) {
+ bool init() {
+  if (!MenuLayer::init()) return false;
+  auto menu = this->getChildByID("bottom-menu");
+  if (!menu || menu->getChildByID("new-keybinds-entry")) return true;
+  auto label = CCLabelBMFont::create("New Keybinds", "goldFont.fnt");
+  label->setScale(.45f);
+  auto item = CCMenuItemExt::createSpriteExtra(label, [](CCObject*) {
+   NewKeybindsPopup::create()->show();
+  });
+  item->setID("new-keybinds-entry");
+  menu->addChild(item);
+  menu->updateLayout();
+  return true;
+ }
 };
