@@ -1,83 +1,37 @@
 #include <Geode/Geode.hpp>
 #include <Geode/ui/Popup.hpp>
-#include <Geode/ui/GeodeUI.hpp>
-#include <Geode/modify/ModsLayer.hpp>
-
+#include <Geode/modify/CCDirector.hpp>
 using namespace geode::prelude;
 
-// First UI milestone: a dedicated popup entry point and categorized overview.
-// Binding capture/editing is intentionally left to the next milestone.
 class NewKeybindsPopup : public Popup<> {
 protected:
-    bool init() override {
-        if (!Popup::init(360.f, 260.f)) return false;
-        this->setTitle("New Keybinds");
-
-        auto content = this->m_mainLayer;
-        auto heading = CCLabelBMFont::create("Keyboard controls", "goldFont.fnt");
-        heading->setScale(.55f);
-        heading->setPosition({m_size.width / 2, m_size.height - 48.f});
-        content->addChild(heading);
-
-        auto makeSection = [&](const char* title, const char* details, float y) {
-            auto label = CCLabelBMFont::create(title, "bigFont.fnt");
-            label->setScale(.45f);
-            label->setAnchorPoint({0.f, .5f});
-            label->setPosition({24.f, y});
-            content->addChild(label);
-
-            auto info = CCLabelBMFont::create(details, "goldFont.fnt");
-            info->setScale(.38f);
-            info->setAnchorPoint({0.f, .5f});
-            info->setPosition({24.f, y - 22.f});
-            info->setColor({190, 190, 190});
-            content->addChild(info);
-        };
-
-        makeSection("Gameplay", "P1 / P2, practice checkpoints, restart", 175.f);
-        makeSection("Editor", "Selection movement and rotation", 112.f);
-        makeSection("Navigation", "Navigation shortcuts (planned)", 49.f);
-
-        auto devices = CCLabelBMFont::create("Devices: controller and Smart Controls planned", "goldFont.fnt");
-        devices->setScale(.36f);
-        devices->setPosition({m_size.width / 2, 20.f});
-        devices->setColor({160, 190, 255});
-        content->addChild(devices);
-        return true;
-    }
-
+ bool init() override {
+  if (!Popup::init(360.f,260.f)) return false;
+  setTitle("New Keybinds");
+  auto c=m_mainLayer;
+  auto h=CCLabelBMFont::create("Keyboard controls","goldFont.fnt");
+  h->setScale(.55f); h->setPosition({m_size.width/2,m_size.height-48.f}); c->addChild(h);
+  auto section=[&](const char*t,const char*d,float y){
+   auto l=CCLabelBMFont::create(t,"bigFont.fnt"); l->setScale(.45f); l->setAnchorPoint({0.f,.5f}); l->setPosition({24.f,y}); c->addChild(l);
+   auto i=CCLabelBMFont::create(d,"goldFont.fnt"); i->setScale(.38f); i->setAnchorPoint({0.f,.5f}); i->setPosition({24.f,y-22.f}); i->setColor({190,190,190}); c->addChild(i);
+  };
+  section("Gameplay","P1 / P2, practice checkpoints, restart",175.f);
+  section("Editor","Selection movement and rotation",112.f);
+  section("Navigation","Navigation shortcuts (planned)",49.f);
+  auto dev=CCLabelBMFont::create("Controller and Smart Controls planned","goldFont.fnt"); dev->setScale(.36f); dev->setPosition({m_size.width/2,20.f}); dev->setColor({160,190,255}); c->addChild(dev);
+  return true;
+ }
 public:
-    static NewKeybindsPopup* create() {
-        auto ret = new NewKeybindsPopup();
-        if (ret->init()) {
-            ret->autorelease();
-            return ret;
-        }
-        delete ret;
-        return nullptr;
-    }
+ static NewKeybindsPopup* create(){auto r=new NewKeybindsPopup();if(r->init()){r->autorelease();return r;}delete r;return nullptr;}
 };
-
-class $modify(NewKeybindsModsLayer, ModsLayer) {
-    void onNewKeybinds(CCObject*) {
-        NewKeybindsPopup::create()->show();
-    }
-
-    bool init() {
-        if (!ModsLayer::init()) return false;
-        auto menu = this->getChildByID("main-menu");
-        if (!menu) menu = this->getChildByID("mods-menu");
-        if (!menu) return true;
-
-        if (menu->getChildByID("new-keybinds-entry")) return true;
-        auto label = CCLabelBMFont::create("New Keybinds", "goldFont.fnt");
-        label->setScale(.55f);
-        auto item = CCMenuItemExt::createSpriteExtra(label, [this](CCObject*) {
-            this->onNewKeybinds(nullptr);
-        });
-        item->setID("new-keybinds-entry");
-        menu->addChild(item);
-        menu->updateLayout();
-        return true;
-    }
+static void addNewKeybindsButton(CCScene* scene){
+ auto layer=scene?scene->getChildByID("ModsLayer"):nullptr;
+ auto menu=layer?layer->getChildByID("actions-menu"):nullptr;
+ if(!menu||menu->getChildByID("new-keybinds-entry"))return;
+ auto label=CCLabelBMFont::create("New Keybinds","goldFont.fnt");label->setScale(.5f);
+ auto item=CCMenuItemExt::createSpriteExtra(label,[](CCObject*){NewKeybindsPopup::create()->show();});
+ item->setID("new-keybinds-entry");menu->addChild(item);menu->updateLayout();
+}
+class $modify(NewKeybindsDirector,CCDirector){
+ void setNextScene(){CCDirector::setNextScene();addNewKeybindsButton(getRunningScene());}
 };
