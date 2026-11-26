@@ -9,16 +9,7 @@ using namespace geode::prelude;
 // - P1/P2 jump routing
 // - Practice checkpoint shortcuts
 // - Level restart shortcut
-//
-// The keybind definitions live in mod.json. Geode handles capture, persistence,
-// multiple bindings per action, and dispatching KeybindSettingPressedEventV3.
 class $modify(NewKeybindsUILayer, UILayer) {
-    static inline bool s_allowKeypressPassthrough = false;
-
-    static void onModify(auto& self) {
-        (void)self.setHookPriority("UILayer::handleKeypress", Priority::Late);
-    }
-
     bool isGameplayLayerActive() const {
         auto* playLayer = PlayLayer::get();
         auto* scene = CCDirector::sharedDirector()->getRunningScene();
@@ -36,8 +27,6 @@ class $modify(NewKeybindsUILayer, UILayer) {
             return;
         }
 
-        // Temporarily enable Geometry Dash's Quick Checkpoints option so
-        // vanilla Z/X/R handlers can process the forwarded key event.
         auto quickKeys = manager->getGameVariable("0163");
         manager->setGameVariable("0163", true);
 
@@ -47,24 +36,14 @@ class $modify(NewKeybindsUILayer, UILayer) {
         auto oldCommand = dispatcher->getCommandKeyPressed();
 
         dispatcher->updateModifierKeys(false, false, false, false);
-        s_allowKeypressPassthrough = true;
-
         if (down) {
             this->keyDown(key, timestamp);
         } else {
             this->keyUp(key, timestamp);
         }
 
-        s_allowKeypressPassthrough = false;
         dispatcher->updateModifierKeys(oldShift, oldControl, oldAlt, oldCommand);
         manager->setGameVariable("0163", quickKeys);
-    }
-
-    void handleKeypress(enumKeyCodes key, bool down, double timestamp) {
-        if (key == enumKeyCodes::KEY_Escape || s_allowKeypressPassthrough) {
-            UILayer::handleKeypress(key, down, timestamp);
-            s_allowKeypressPassthrough = false;
-        }
     }
 
     bool init(GJBaseGameLayer* layer) {
@@ -75,9 +54,7 @@ class $modify(NewKeybindsUILayer, UILayer) {
         this->addEventListener(
             KeybindSettingPressedEventV3(Mod::get(), "jump-p1"),
             [layer](Keybind const&, bool down, bool repeat, double timestamp) {
-                if (repeat) {
-                    return ListenerResult::Propagate;
-                }
+                if (repeat) return ListenerResult::Propagate;
                 layer->queueButton(1, down, false, timestamp);
                 return ListenerResult::Stop;
             }
@@ -86,9 +63,7 @@ class $modify(NewKeybindsUILayer, UILayer) {
         this->addEventListener(
             KeybindSettingPressedEventV3(Mod::get(), "jump-p2"),
             [layer](Keybind const&, bool down, bool repeat, double timestamp) {
-                if (repeat) {
-                    return ListenerResult::Propagate;
-                }
+                if (repeat) return ListenerResult::Propagate;
                 layer->queueButton(1, down, true, timestamp);
                 return ListenerResult::Stop;
             }
@@ -97,9 +72,7 @@ class $modify(NewKeybindsUILayer, UILayer) {
         this->addEventListener(
             KeybindSettingPressedEventV3(Mod::get(), "place-checkpoint"),
             [this](Keybind const&, bool down, bool repeat, double timestamp) {
-                if (repeat || !this->isGameplayLayerActive()) {
-                    return ListenerResult::Propagate;
-                }
+                if (repeat || !this->isGameplayLayerActive()) return ListenerResult::Propagate;
                 this->replayVanillaKey(KEY_Z, down, timestamp);
                 return ListenerResult::Stop;
             }
@@ -108,9 +81,7 @@ class $modify(NewKeybindsUILayer, UILayer) {
         this->addEventListener(
             KeybindSettingPressedEventV3(Mod::get(), "delete-checkpoint"),
             [this](Keybind const&, bool down, bool repeat, double timestamp) {
-                if (repeat || !this->isGameplayLayerActive()) {
-                    return ListenerResult::Propagate;
-                }
+                if (repeat || !this->isGameplayLayerActive()) return ListenerResult::Propagate;
                 this->replayVanillaKey(KEY_X, down, timestamp);
                 return ListenerResult::Stop;
             }
@@ -119,9 +90,7 @@ class $modify(NewKeybindsUILayer, UILayer) {
         this->addEventListener(
             KeybindSettingPressedEventV3(Mod::get(), "restart-level"),
             [this](Keybind const&, bool down, bool repeat, double timestamp) {
-                if (repeat || !this->isGameplayLayerActive()) {
-                    return ListenerResult::Propagate;
-                }
+                if (repeat || !this->isGameplayLayerActive()) return ListenerResult::Propagate;
                 this->replayVanillaKey(KEY_R, down, timestamp);
                 return ListenerResult::Stop;
             }
