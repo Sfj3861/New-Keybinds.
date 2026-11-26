@@ -3,11 +3,11 @@
   "gd": {
     "android": "2.2091"
   },
-  "version": "0.4.0",
+  "version": "0.5.0-alpha2",
   "id": "sfj3861.new-keybinds",
   "name": "New Keybinds",
   "developer": "Sfj3861",
-  "description": "Custom gameplay and editor keyboard controls with a dedicated popup interface (Android).",
+  "description": "Custom gameplay and editor keyboard controls plus Instant Action context selection foundation (Android).",
   "links": {
     "source": "https://github.com/Sfj3861/New-Keybinds."
   },
