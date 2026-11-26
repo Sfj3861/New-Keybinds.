@@ -1,0 +1,40 @@
+{
+  "geode": "5.9.0",
+  "gd": {
+    "android": "2.2091"
+  },
+  "version": "0.1.0",
+  "id": "Sfj3861.new-keybinds",
+  "name": "New Keybinds",
+  "developer": "Sfj3861",
+  "description": "Customizable gameplay keybinds for Geometry Dash on Android.",
+  "links": {
+    "source": "https://github.com/Sfj3861/New-Keybinds."
+  },
+  "settings": {
+    "gameplay-title": {
+      "name": "Gameplay",
+      "description": "Custom controls for gameplay.",
+      "type": "title"
+    },
+    "jump-p1": {
+      "name": "Jump (Player 1)",
+      "description": "Primary gameplay input.",
+      "type": "keybind",
+      "category": "gameplay",
+      "default": [
+        "Space",
+        "W"
+      ]
+    },
+    "jump-p2": {
+      "name": "Jump (Player 2)",
+      "description": "Secondary gameplay input.",
+      "type": "keybind",
+      "category": "gameplay",
+      "default": [
+        "Up"
+      ]
+    }
+  }
+}
