@@ -37,27 +37,22 @@ public:
 class NewKeybindsPopup : public geode::Popup {
 protected:
  bool init() override {
-  if (!Popup::init(360.f,280.f)) return false;
-  setTitle("New Keybinds");
+  if (!Popup::init(360.f,230.f)) return false;
+  setTitle("Custom Keybinds");
   auto c=m_mainLayer;
-  auto h=CCLabelBMFont::create("Custom Keybinds","goldFont.fnt");
-  h->setScale(.55f); h->setPosition({m_size.width/2,m_size.height-42.f}); c->addChild(h);
   auto section=[&](const char*t,const char*d,float y){
    auto l=CCLabelBMFont::create(t,"bigFont.fnt"); l->setScale(.45f); l->setAnchorPoint({0.f,.5f}); l->setPosition({24.f,y}); c->addChild(l);
    auto i=CCLabelBMFont::create(d,"goldFont.fnt"); i->setScale(.38f); i->setAnchorPoint({0.f,.5f}); i->setPosition({24.f,y-22.f}); i->setColor({190,190,190}); c->addChild(i);
   };
-  section("Gameplay","P1/P2, checkpoints and restart",185.f);
-  section("Editor","Selection movement and rotation",125.f);
-  auto divider=CCLabelBMFont::create("INSTANT ACTIONS","bigFont.fnt"); divider->setScale(.42f); divider->setPosition({m_size.width/2,76.f}); c->addChild(divider);
-  auto ia=CCLabelBMFont::create("Open Instant Actions","goldFont.fnt"); ia->setScale(.42f);
-  auto item=CCMenuItemExt::createSpriteExtra(ia,[](CCObject*){InstantActionPopup::create()->show();});
-  auto menu=CCMenu::create();menu->addChild(item);menu->setPosition({m_size.width/2,48.f});c->addChild(menu);
-  auto dev=CCLabelBMFont::create("Smart Controls planned for Beta","goldFont.fnt"); dev->setScale(.34f); dev->setPosition({m_size.width/2,15.f}); dev->setColor({160,190,255}); c->addChild(dev);
+  section("Gameplay","P1/P2, checkpoints and restart",155.f);
+  section("Editor","Selection movement and rotation",90.f);
+  auto dev=CCLabelBMFont::create("Smart Controls planned for Beta-3","goldFont.fnt"); dev->setScale(.34f); dev->setPosition({m_size.width/2,24.f}); dev->setColor({160,190,255}); c->addChild(dev);
   return true;
  }
 public:
  static NewKeybindsPopup* create(){auto r=new NewKeybindsPopup();if(r->init()){r->autorelease();return r;}delete r;return nullptr;}
 };
+
 #include <Geode/modify/MenuLayer.hpp>
 
 class $modify(NewKeybindsMenuLayer, MenuLayer) {
@@ -65,13 +60,20 @@ class $modify(NewKeybindsMenuLayer, MenuLayer) {
   if (!MenuLayer::init()) return false;
   auto menu = this->getChildByID("bottom-menu");
   if (!menu || menu->getChildByID("new-keybinds-entry")) return true;
-  auto label = CCLabelBMFont::create("New Keybinds", "goldFont.fnt");
-  label->setScale(.45f);
-  auto item = CCMenuItemExt::createSpriteExtra(label, [](CCObject*) {
+  auto customLabel = CCLabelBMFont::create("Custom Keybinds", "goldFont.fnt");
+  customLabel->setScale(.38f);
+  auto customItem = CCMenuItemExt::createSpriteExtra(customLabel, [](CCObject*) {
    NewKeybindsPopup::create()->show();
   });
-  item->setID("new-keybinds-entry");
-  menu->addChild(item);
+  customItem->setID("new-keybinds-custom-entry");
+  auto instantLabel = CCLabelBMFont::create("Instant Actions", "goldFont.fnt");
+  instantLabel->setScale(.38f);
+  auto instantItem = CCMenuItemExt::createSpriteExtra(instantLabel, [](CCObject*) {
+   InstantActionPopup::create()->show();
+  });
+  instantItem->setID("new-keybinds-instant-entry");
+  menu->addChild(customItem);
+  menu->addChild(instantItem);
   menu->updateLayout();
   return true;
  }
