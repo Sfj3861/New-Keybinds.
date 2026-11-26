@@ -5,7 +5,7 @@
 #include <Geode/modify/CCDirector.hpp>
 using namespace geode::prelude;
 
-class NewKeybindsPopup : public Popup<> {
+class NewKeybindsPopup : public geode::Popup {
 protected:
  bool init() override {
   if (!Popup::init(360.f,260.f)) return false;
