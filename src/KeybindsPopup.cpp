@@ -4,6 +4,56 @@
 
 using namespace geode::prelude;
 
+
+// Prototype sequence workspace: persists a user-authored sequence draft.
+// This workspace deliberately does not replay gameplay or automate level runs.
+class InstantSequencePopup : public Popup {
+protected:
+    bool init() override {
+        if (!Popup::init(360.f, 300.f)) return false;
+        setTitle("Instant Actions - Sequence Draft");
+        auto mod = Mod::get();
+        auto steps = mod->getSavedValue<std::vector<std::string>>("instant-sequence-draft", {});
+        auto info = CCLabelBMFont::create("Build and save a UI sequence draft", "goldFont.fnt");
+        info->setScale(.42f);
+        info->setPosition({m_size.width/2, m_size.height-48.f});
+        m_mainLayer->addChild(info);
+        auto list = CCLabelBMFont::create(steps.empty() ? "No steps yet" : "", "goldFont.fnt");
+        list->setScale(.4f);
+        list->setPosition({m_size.width/2, m_size.height-92.f});
+        m_mainLayer->addChild(list);
+        if (!steps.empty()) {
+            std::string text;
+            for (size_t i=0;i<steps.size();++i) text += std::to_string(i+1)+". "+steps[i]+"\n";
+            list->setString(text.c_str());
+        }
+        auto menu=CCMenu::create();
+        menu->setPosition({m_size.width/2, 65.f});
+        const char* labels[]={"Add: Open Pause UI","Add: Open Level Browser","Add: Main Menu Context","Clear Draft"};
+        for(int i=0;i<4;++i){
+            auto item=CCMenuItemExt::createSpriteExtra(ButtonSprite::create(labels[i],"goldFont.fnt","GJ_button_01.png",.55f),[i](CCObject*){
+                auto m=Mod::get();
+                auto v=m->getSavedValue<std::vector<std::string>>("instant-sequence-draft",{});
+                if(i==0) v.push_back("Open Pause UI (draft)");
+                else if(i==1) v.push_back("Open Level Browser (draft)");
+                else if(i==2) v.push_back("Main Menu context (draft)");
+                else v.clear();
+                m->setSavedValue("instant-sequence-draft",v);
+                InstantSequencePopup::create()->show();
+            });
+            item->setPosition({0.f,-i*34.f});
+            menu->addChild(item);
+        }
+        m_mainLayer->addChild(menu);
+        auto note=CCLabelBMFont::create("Draft only: steps are stored, not replayed.", "goldFont.fnt");
+        note->setScale(.33f); note->setPosition({m_size.width/2,20.f}); note->setColor({180,195,220});
+        m_mainLayer->addChild(note);
+        return true;
+    }
+public:
+    static InstantSequencePopup* create(){auto ret=new InstantSequencePopup();if(ret->init()){ret->autorelease();return ret;}delete ret;return nullptr;}
+};
+
 class InstantActionPopup : public Popup {
 protected:
     bool init() override {
@@ -62,6 +112,10 @@ protected:
             item->setPosition({(i % 3 - 1) * 116.f, (1 - i / 3) * 48.f});
             menu->addChild(item);
         }
+
+        auto draftItem = CCMenuItemExt::createSpriteExtra(ButtonSprite::create("Sequence Draft", "goldFont.fnt", "GJ_button_01.png", .65f), [](CCObject*) { InstantSequencePopup::create()->show(); });
+        draftItem->setPosition({0.f, -170.f});
+        menu->addChild(draftItem);
 
         // Each item uses a real ButtonSprite with a bounded clickable area.\n        m_mainLayer->addChild(menu);
 
