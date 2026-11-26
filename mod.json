@@ -121,6 +121,42 @@
       "default": [
         "E"
       ]
+    },
+    "noclip-toggle": {
+      "name": "Noclip / Ignore Damage key",
+      "description": "Forward N to the game; requires a compatible feature handler.",
+      "type": "keybind",
+      "category": "gameplay",
+      "default": [
+        "N"
+      ]
+    },
+    "hitbox-toggle": {
+      "name": "Hitbox key",
+      "description": "Forward H to the game; requires a compatible feature handler.",
+      "type": "keybind",
+      "category": "gameplay",
+      "default": [
+        "H"
+      ]
+    },
+    "trail-toggle": {
+      "name": "Trail key",
+      "description": "Forward T to the game; requires a compatible feature handler.",
+      "type": "keybind",
+      "category": "gameplay",
+      "default": [
+        "T"
+      ]
+    },
+    "speedhack-toggle": {
+      "name": "Speedhack activation key",
+      "description": "Forward K to the game; requires a compatible feature handler.",
+      "type": "keybind",
+      "category": "gameplay",
+      "default": [
+        "K"
+      ]
     }
   }
 }
