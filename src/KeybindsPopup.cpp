@@ -139,49 +139,26 @@ public:
 class SmartControlsPopup : public Popup {
 protected:
     bool init() override {
-        if (!Popup::init(330.f, 220.f)) return false;
+        if(!Popup::init(330.f,220.f)) return false;
         setTitle("Smart Controls");
-        auto* description = CCLabelBMFont::create(
-            "On-screen jump buttons for mobile gameplay", "goldFont.fnt"
-        );
-        description->setScale(.38f);
-        description->setPosition({m_size.width / 2, m_size.height - 55.f});
-        m_mainLayer->addChild(description);
-
-        auto enabled = Mod::get()->getSavedValue<bool>("smart-controls-enabled", false);
-        auto* state = CCLabelBMFont::create(enabled ? "Enabled" : "Disabled", "goldFont.fnt");
-        state->setScale(.55f);
-        state->setPosition({m_size.width / 2, 95.f});
-        state->setColor(enabled ? ccColor3B{100, 230, 130} : ccColor3B{230, 130, 100});
-        m_mainLayer->addChild(state);
-
-        auto* toggleLabel = CCLabelBMFont::create("Toggle Smart Controls", "goldFont.fnt");
-        toggleLabel->setScale(.48f);
-        auto* toggle = CCMenuItemExt::createSpriteExtra(toggleLabel, [state](CCObject*) {
-            auto current = Mod::get()->getSavedValue<bool>("smart-controls-enabled", false);
-            Mod::get()->setSavedValue("smart-controls-enabled", !current);
-            state->setString(!current ? "Enabled (restart level)" : "Disabled");
-            state->setColor(!current ? ccColor3B{100, 230, 130} : ccColor3B{230, 130, 100});
+        auto info=CCLabelBMFont::create("Customize touch buttons, placement and opacity", "goldFont.fnt");
+        info->setScale(.4f); info->setPosition({m_size.width/2,m_size.height-55.f}); m_mainLayer->addChild(info);
+        auto menu=CCMenu::create(); menu->setPosition({m_size.width/2,m_size.height/2-5.f});
+        auto settings=ButtonSprite::create("Configure Controls","goldFont.fnt","GJ_button_01.png",.75f);
+        auto item=CCMenuItemExt::createSpriteExtra(settings,[](CCObject*){openSettingsPopup(Mod::get());});
+        menu->addChild(item);
+        auto toggleText=Mod::get()->getSettingValue<bool>("smart-controls-enabled")?"Disable Smart Controls":"Enable Smart Controls";
+        auto toggle=CCMenuItemExt::createSpriteExtra(ButtonSprite::create(toggleText,"goldFont.fnt","GJ_button_02.png",.75f),[](CCObject*) {
+            auto current=Mod::get()->getSettingValue<bool>("smart-controls-enabled");
+            Mod::get()->setSettingValue("smart-controls-enabled",!current);
+            FLAlertLayer::create("Smart Controls","Setting changed. Re-enter gameplay to recreate the on-screen buttons.","OK")->show();
         });
-        auto* menu = CCMenu::create();
-        menu->addChild(toggle);
-        menu->setPosition({m_size.width / 2, 55.f});
+        toggle->setPosition({0,-48.f}); menu->addChild(toggle);
         m_mainLayer->addChild(menu);
-
-        auto* note = CCLabelBMFont::create("Changes apply when gameplay layer is recreated", "goldFont.fnt");
-        note->setScale(.30f);
-        note->setPosition({m_size.width / 2, 22.f});
-        note->setColor({170, 170, 170});
-        m_mainLayer->addChild(note);
         return true;
     }
 public:
-    static SmartControlsPopup* create() {
-        auto ret = new SmartControlsPopup();
-        if (ret->init()) { ret->autorelease(); return ret; }
-        delete ret;
-        return nullptr;
-    }
+    static SmartControlsPopup* create(){auto ret=new SmartControlsPopup();if(ret->init()){ret->autorelease();return ret;}delete ret;return nullptr;}
 };
 
 class NewKeybindsHubPopup : public Popup {
