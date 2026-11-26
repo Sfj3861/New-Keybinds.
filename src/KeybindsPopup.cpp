@@ -110,10 +110,58 @@ public:
     }
 };
 
+class SmartControlsPopup : public Popup {
+protected:
+    bool init() override {
+        if (!Popup::init(330.f, 220.f)) return false;
+        setTitle("Smart Controls");
+        auto* description = CCLabelBMFont::create(
+            "On-screen jump buttons for mobile gameplay", "goldFont.fnt"
+        );
+        description->setScale(.38f);
+        description->setPosition({m_size.width / 2, m_size.height - 55.f});
+        m_mainLayer->addChild(description);
+
+        auto enabled = Mod::get()->getSavedValue<bool>("smart-controls-enabled", false);
+        auto* state = CCLabelBMFont::create(enabled ? "Enabled" : "Disabled", "goldFont.fnt");
+        state->setScale(.55f);
+        state->setPosition({m_size.width / 2, 95.f});
+        state->setColor(enabled ? ccColor3B{100, 230, 130} : ccColor3B{230, 130, 100});
+        m_mainLayer->addChild(state);
+
+        auto* toggleLabel = CCLabelBMFont::create(enabled ? "Disable Smart Controls" : "Enable Smart Controls", "goldFont.fnt");
+        toggleLabel->setScale(.48f);
+        auto* toggle = CCMenuItemExt::createSpriteExtra(toggleLabel, [state](CCObject*) {
+            auto current = Mod::get()->getSavedValue<bool>("smart-controls-enabled", false);
+            Mod::get()->setSavedValue("smart-controls-enabled", !current);
+            state->setString(!current ? "Enabled (restart level)" : "Disabled");
+            state->setColor(!current ? ccColor3B{100, 230, 130} : ccColor3B{230, 130, 100});
+        });
+        auto* menu = CCMenu::create();
+        menu->addChild(toggle);
+        menu->setPosition({m_size.width / 2, 55.f});
+        m_mainLayer->addChild(menu);
+
+        auto* note = CCLabelBMFont::create("P1 and P2 buttons appear in gameplay after enabling", "goldFont.fnt");
+        note->setScale(.30f);
+        note->setPosition({m_size.width / 2, 22.f});
+        note->setColor({170, 170, 170});
+        m_mainLayer->addChild(note);
+        return true;
+    }
+public:
+    static SmartControlsPopup* create() {
+        auto ret = new SmartControlsPopup();
+        if (ret->init()) { ret->autorelease(); return ret; }
+        delete ret;
+        return nullptr;
+    }
+};
+
 class NewKeybindsHubPopup : public Popup {
 protected:
     bool init() override {
-        if (!Popup::init(300.f, 190.f)) return false;
+        if (!Popup::init(320.f, 235.f)) return false;
         setTitle("New Keybinds");
 
         auto subtitle = CCLabelBMFont::create("Choose a section", "goldFont.fnt");
@@ -137,8 +185,16 @@ protected:
         auto instantButton = CCMenuItemExt::createSpriteExtra(instantLabel, [](CCObject*) {
             InstantActionPopup::create()->show();
         });
-        instantButton->setPosition({0.f, -30.f});
+        instantButton->setPosition({0.f, -25.f});
         menu->addChild(instantButton);
+
+        auto smartLabel = CCLabelBMFont::create("Smart Controls", "goldFont.fnt");
+        smartLabel->setScale(.55f);
+        auto smartButton = CCMenuItemExt::createSpriteExtra(smartLabel, [](CCObject*) {
+            SmartControlsPopup::create()->show();
+        });
+        smartButton->setPosition({0.f, -75.f});
+        menu->addChild(smartButton);
 
         m_mainLayer->addChild(menu);
         return true;
