@@ -63,10 +63,7 @@ protected:
             menu->addChild(item);
         }
 
-        menu->setContentSize({350.f, 160.f});
-        menu->setLayout(AxisLayout::create()->setAxis(Axis::Column)->setGap(8.f));
-        // Explicit grid positions are retained; each item has a real ButtonSprite hitbox.
-        m_mainLayer->addChild(menu);
+        // Each item uses a real ButtonSprite with a bounded clickable area.\n        m_mainLayer->addChild(menu);
 
         auto note = CCLabelBMFont::create(
             "Gameplay opens online level 6508283", "goldFont.fnt"
