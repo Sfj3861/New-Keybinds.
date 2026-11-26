@@ -107,7 +107,7 @@ protected:
 
         auto editor = ButtonSprite::create("Editor", "goldFont.fnt", "GJ_button_02.png", .7f);
         auto editorItem = CCMenuItemExt::createSpriteExtra(editor, [](CCObject*) {
-            openKeybindsPopup(KeybindCategory::None, Mod::get());
+            openKeybindsPopup(KeybindCategory::Editor, Mod::get());
         });
         editorItem->setPosition({0.f, -8.f});
         menu->addChild(editorItem);
