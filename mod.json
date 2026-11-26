@@ -3,11 +3,11 @@
   "gd": {
     "android": "2.2091"
   },
-  "version": "0.5.2-beta.1",
+  "version": "0.6.0-beta.1",
   "id": "sfj3861.new-keybinds",
   "name": "New Keybinds",
   "developer": "Sfj3861",
-  "description": "Custom gameplay and editor keyboard controls plus Instant Action context selection foundation (Android).",
+  "description": "Custom keyboard shortcuts, Instant Actions context selector, and configurable mobile Smart Controls.",
   "links": {
     "source": "https://github.com/Sfj3861/New-Keybinds."
   },
@@ -157,6 +157,17 @@
       "default": [
         "K"
       ]
+    },
+    "smart-controls-title": {
+      "name": "Smart Controls",
+      "description": "On-screen P1/P2 jump buttons for mobile gameplay.",
+      "type": "title"
+    },
+    "smart-controls-enabled": {
+      "name": "Enable Smart Controls",
+      "description": "Show on-screen P1/P2 jump buttons during gameplay. Can also be toggled in the New Keybinds popup.",
+      "type": "bool",
+      "default": false
     }
   }
 }
