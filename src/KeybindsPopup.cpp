@@ -179,11 +179,9 @@ $execute {
             auto logo = createModLogo(Mod::get());
             if (!logo) return ListenerResult::Propagate;
 
-            auto button = CCMenuItemSpriteExtra::create(
-                logo, nullptr, [](CCObject*) {
-                    NewKeybindsHubPopup::create()->show();
-                }
-            );
+            auto button = CCMenuItemExt::createSpriteExtra(logo, [](CCObject*) {
+                NewKeybindsHubPopup::create()->show();
+            });
             button->setID("new-keybinds-library-button");
             button->setScale(.8f);
             actionsMenu->addChild(button);
