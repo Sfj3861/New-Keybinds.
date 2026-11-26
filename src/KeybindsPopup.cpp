@@ -22,10 +22,10 @@ protected:
         ActionEntry const actions[] = {
             {"Gameplay", "GJ_button_01.png"},
             {"Practice", "GJ_button_02.png"},
-            {"Editor", "GJ_button_03.png"},
-            {"Editor - Create", "GJ_button_04.png"},
-            {"Editor - Edit", "GJ_button_05.png"},
-            {"Editor - Delete", "GJ_button_06.png"},
+            {"My Levels", "GJ_button_03.png"},
+            {"Create Level", "GJ_button_04.png"},
+            {"Edit Levels", "GJ_button_05.png"},
+            {"Manage Levels", "GJ_button_06.png"},
             {"Pause Menu", "GJ_button_01.png"},
             {"Main Menu", "GJ_button_02.png"},
             {"Level Select", "GJ_button_03.png"}
@@ -66,7 +66,7 @@ protected:
         // Each item uses a real ButtonSprite with a bounded clickable area.\n        m_mainLayer->addChild(menu);
 
         auto note = CCLabelBMFont::create(
-            "Gameplay opens online level 6508283", "goldFont.fnt"
+            "Gameplay and Practice open level search results", "goldFont.fnt"
         );
         note->setScale(.34f);
         note->setPosition({m_size.width / 2, 22.f});
@@ -147,7 +147,7 @@ protected:
         state->setColor(enabled ? ccColor3B{100, 230, 130} : ccColor3B{230, 130, 100});
         m_mainLayer->addChild(state);
 
-        auto* toggleLabel = CCLabelBMFont::create(enabled ? "Disable Smart Controls" : "Enable Smart Controls", "goldFont.fnt");
+        auto* toggleLabel = CCLabelBMFont::create("Toggle Smart Controls", "goldFont.fnt");
         toggleLabel->setScale(.48f);
         auto* toggle = CCMenuItemExt::createSpriteExtra(toggleLabel, [state](CCObject*) {
             auto current = Mod::get()->getSavedValue<bool>("smart-controls-enabled", false);
@@ -160,7 +160,7 @@ protected:
         menu->setPosition({m_size.width / 2, 55.f});
         m_mainLayer->addChild(menu);
 
-        auto* note = CCLabelBMFont::create("P1 and P2 buttons appear in gameplay after enabling", "goldFont.fnt");
+        auto* note = CCLabelBMFont::create("Changes apply when gameplay layer is recreated", "goldFont.fnt");
         note->setScale(.30f);
         note->setPosition({m_size.width / 2, 22.f});
         note->setColor({170, 170, 170});
