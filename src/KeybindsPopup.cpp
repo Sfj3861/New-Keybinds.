@@ -1,7 +1,7 @@
 #include <Geode/Geode.hpp>
 #include <Geode/ui/Popup.hpp>
 #include <Geode/ui/GeodeUI.hpp>
-#include <Geode/modify/MenuLayer.hpp>
+#include <Geode/modify/CCDirector.hpp>
 using namespace geode::prelude;
 
 class InstantActionPopup : public geode::Popup {
@@ -58,26 +58,21 @@ protected:
 public:
  static NewKeybindsPopup* create(){auto r=new NewKeybindsPopup();if(r->init()){r->autorelease();return r;}delete r;return nullptr;}
 };
+#include <Geode/modify/MenuLayer.hpp>
 
 class $modify(NewKeybindsMenuLayer, MenuLayer) {
  bool init() {
   if (!MenuLayer::init()) return false;
-  if (this->getChildByID("new-keybinds-overlay")) return true;
-
-  auto winSize = CCDirector::get()->getWinSize();
-  auto overlay = CCMenu::create();
-  overlay->setID("new-keybinds-overlay");
-  overlay->setPosition({winSize.width - 72.f, winSize.height - 34.f});
-  overlay->setZOrder(1000);
-
-  auto label = CCLabelBMFont::create("Keybinds", "goldFont.fnt");
-  label->setScale(.48f);
+  auto menu = this->getChildByID("bottom-menu");
+  if (!menu || menu->getChildByID("new-keybinds-entry")) return true;
+  auto label = CCLabelBMFont::create("New Keybinds", "goldFont.fnt");
+  label->setScale(.45f);
   auto item = CCMenuItemExt::createSpriteExtra(label, [](CCObject*) {
    NewKeybindsPopup::create()->show();
   });
   item->setID("new-keybinds-entry");
-  overlay->addChild(item);
-  this->addChild(overlay, 1000);
+  menu->addChild(item);
+  menu->updateLayout();
   return true;
  }
 };
