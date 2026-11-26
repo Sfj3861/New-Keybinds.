@@ -87,42 +87,50 @@ public:
 class CustomKeybindsPopup : public Popup {
 protected:
     bool init() override {
-        if (!Popup::init(360.f, 230.f)) return false;
+        if (!Popup::init(360.f, 245.f)) return false;
         setTitle("Custom Keybinds");
 
-        auto addSection = [this](const char* title, const char* description, float y) {
-            auto heading = CCLabelBMFont::create(title, "bigFont.fnt");
-            heading->setScale(.45f);
-            heading->setAnchorPoint({0.f, .5f});
-            heading->setPosition({24.f, y});
-            m_mainLayer->addChild(heading);
+        auto subtitle = CCLabelBMFont::create("Configure bindings in Geode's settings", "goldFont.fnt");
+        subtitle->setScale(.42f);
+        subtitle->setPosition({m_size.width / 2, m_size.height - 48.f});
+        m_mainLayer->addChild(subtitle);
 
-            auto detail = CCLabelBMFont::create(description, "goldFont.fnt");
-            detail->setScale(.38f);
-            detail->setAnchorPoint({0.f, .5f});
-            detail->setPosition({24.f, y - 22.f});
-            detail->setColor({190, 190, 190});
-            m_mainLayer->addChild(detail);
-        };
+        auto menu = CCMenu::create();
+        menu->setPosition({m_size.width / 2, m_size.height / 2 - 8.f});
 
-        addSection("Gameplay", "P1/P2, checkpoints and restart", 155.f);
-        addSection("Editor", "Selection movement and rotation", 90.f);
+        auto gameplay = ButtonSprite::create("Gameplay", "goldFont.fnt", "GJ_button_01.png", .7f);
+        auto gameplayItem = CCMenuItemExt::createSpriteExtra(gameplay, [](CCObject*) {
+            openKeybindsPopup(KeybindCategory::Gameplay, Mod::get());
+        });
+        gameplayItem->setPosition({0.f, 38.f});
+        menu->addChild(gameplayItem);
 
-        auto planned = CCLabelBMFont::create("Smart Controls planned for Beta-3", "goldFont.fnt");
-        planned->setScale(.34f);
-        planned->setPosition({m_size.width / 2, 24.f});
-        planned->setColor({160, 190, 255});
-        m_mainLayer->addChild(planned);
+        auto editor = ButtonSprite::create("Editor", "goldFont.fnt", "GJ_button_02.png", .7f);
+        auto editorItem = CCMenuItemExt::createSpriteExtra(editor, [](CCObject*) {
+            openKeybindsPopup(KeybindCategory::None, Mod::get());
+        });
+        editorItem->setPosition({0.f, -8.f});
+        menu->addChild(editorItem);
+
+        auto settings = ButtonSprite::create("All Mod Settings", "goldFont.fnt", "GJ_button_03.png", .7f);
+        auto settingsItem = CCMenuItemExt::createSpriteExtra(settings, [](CCObject*) {
+            openSettingsPopup(Mod::get());
+        });
+        settingsItem->setPosition({0.f, -54.f});
+        menu->addChild(settingsItem);
+        m_mainLayer->addChild(menu);
+
+        auto note = CCLabelBMFont::create("Bindings are editable and persist through Geode", "goldFont.fnt");
+        note->setScale(.32f);
+        note->setPosition({m_size.width / 2, 22.f});
+        note->setColor({180, 195, 220});
+        m_mainLayer->addChild(note);
         return true;
     }
-
 public:
     static CustomKeybindsPopup* create() {
         auto ret = new CustomKeybindsPopup();
-        if (ret->init()) {
-            ret->autorelease();
-            return ret;
-        }
+        if (ret->init()) { ret->autorelease(); return ret; }
         delete ret;
         return nullptr;
     }
