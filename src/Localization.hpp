@@ -28,7 +28,26 @@ inline std::string tr(std::string_view key) {
         {"Recording saved.", "Grabación guardada."}, {"Clear Saved Steps", "Borrar pasos guardados"},
         {"Start Recording", "Iniciar grabación"}, {"Close", "Cerrar"},
         {"English", "Inglés"}, {"Spanish", "Español"}, {"French", "Francés"}, {"Russian", "Ruso"},
-        {"Profile name / duplicate name", "Nombre del perfil / copia"}
+        {"Profile name / duplicate name", "Nombre del perfil / copia"},
+        {"Jump - Player 1", "Salto - Jugador 1"}, {"Jump - Player 2", "Salto - Jugador 2"},
+        {"Place Practice Checkpoint", "Colocar checkpoint"}, {"Delete Practice Checkpoint", "Borrar checkpoint"},
+        {"Restart Level", "Reiniciar nivel"}, {"Find Target Level (Gameplay)", "Buscar nivel objetivo (Normal)"},
+        {"Find Target Level (Practice)", "Buscar nivel objetivo (Práctica)"},
+        {"Move Selection Up", "Mover selección arriba"}, {"Move Selection Left", "Mover selección izquierda"},
+        {"Move Selection Down", "Mover selección abajo"}, {"Move Selection Right", "Mover selección derecha"},
+        {"Rotate 90 Degrees Left", "Girar 90° a la izquierda"}, {"Rotate 90 Degrees Right", "Girar 90° a la derecha"},
+        {"Open My Levels", "Abrir mis niveles"}, {"Open Online Level Browser", "Abrir buscador de niveles"},
+        {"Open Pause Menu", "Abrir menú de pausa"}, {"Open Main Menu", "Abrir menú principal"},
+        {"Unassigned", "Sin asignar"}, {"Set", "Asignar"}, {"Clear", "Borrar"},
+        {"ADD / REPLACE", "AÑADIR / REEMPLAZAR"}, {"Ready. ADD mode is active.", "Listo. Modo AÑADIR activo."},
+        {"Duplicate keys in the same context are blocked. Up to 6 bindings per action.", "No se permiten teclas duplicadas en el mismo contexto. Máximo 6 por acción."},
+        {"All keys for this action were cleared.", "Se han borrado todas las teclas de esta acción."},
+        {"Global Profiles", "Perfiles globales"}, {"Previous", "Anterior"}, {"Next", "Siguiente"},
+        {"Save", "Guardar"}, {"Apply", "Aplicar"}, {"Duplicate", "Duplicar"}, {"Rename", "Renombrar"},
+        {"Delete", "Eliminar"}, {"Create", "Crear"}, {"No profile selected", "Ningún perfil seleccionado"},
+        {"Profiles capture every setting declared by New Keybinds.", "Los perfiles guardan todos los ajustes de New Keybinds."},
+        {"Only actions with an implemented destination are shown.", "Solo se muestran acciones con destino disponible."},
+        {"Gameplay/Practice starts the configured target level directly.", "Normal/Práctica inicia directamente el nivel configurado."}
     };
     static const std::unordered_map<std::string, std::string> fr = {
         {"Choose a section", "Choisir une section"}, {"Custom Keybinds", "Touches personnalisées"},
@@ -51,7 +70,26 @@ inline std::string tr(std::string_view key) {
         {"Recording saved.", "Enregistrement sauvegardé."}, {"Clear Saved Steps", "Effacer les étapes"},
         {"Start Recording", "Démarrer l'enregistrement"}, {"Close", "Fermer"},
         {"English", "Anglais"}, {"Spanish", "Espagnol"}, {"French", "Français"}, {"Russian", "Russe"},
-        {"Profile name / duplicate name", "Nom du profil / copie"}
+        {"Profile name / duplicate name", "Nom du profil / copie"},
+        {"Jump - Player 1", "Saut - Joueur 1"}, {"Jump - Player 2", "Saut - Joueur 2"},
+        {"Place Practice Checkpoint", "Placer un checkpoint"}, {"Delete Practice Checkpoint", "Supprimer le checkpoint"},
+        {"Restart Level", "Redémarrer le niveau"}, {"Find Target Level (Gameplay)", "Trouver le niveau cible (Normal)"},
+        {"Find Target Level (Practice)", "Trouver le niveau cible (Entraînement)"},
+        {"Move Selection Up", "Déplacer la sélection vers le haut"}, {"Move Selection Left", "Déplacer la sélection à gauche"},
+        {"Move Selection Down", "Déplacer la sélection vers le bas"}, {"Move Selection Right", "Déplacer la sélection à droite"},
+        {"Rotate 90 Degrees Left", "Pivoter de 90° à gauche"}, {"Rotate 90 Degrees Right", "Pivoter de 90° à droite"},
+        {"Open My Levels", "Ouvrir mes niveaux"}, {"Open Online Level Browser", "Ouvrir le navigateur"},
+        {"Open Pause Menu", "Ouvrir le menu pause"}, {"Open Main Menu", "Ouvrir le menu principal"},
+        {"Unassigned", "Non assigné"}, {"Set", "Définir"}, {"Clear", "Effacer"},
+        {"ADD / REPLACE", "AJOUTER / REMPLACER"}, {"Ready. ADD mode is active.", "Prêt. Le mode AJOUTER est actif."},
+        {"Duplicate keys in the same context are blocked. Up to 6 bindings per action.", "Les doublons sont bloqués dans un même contexte. 6 touches maximum par action."},
+        {"All keys for this action were cleared.", "Toutes les touches de cette action ont été effacées."},
+        {"Global Profiles", "Profils globaux"}, {"Previous", "Précédent"}, {"Next", "Suivant"},
+        {"Save", "Enregistrer"}, {"Apply", "Appliquer"}, {"Duplicate", "Dupliquer"}, {"Rename", "Renommer"},
+        {"Delete", "Supprimer"}, {"Create", "Créer"}, {"No profile selected", "Aucun profil sélectionné"},
+        {"Profiles capture every setting declared by New Keybinds.", "Les profils enregistrent tous les paramètres de New Keybinds."},
+        {"Only actions with an implemented destination are shown.", "Seules les actions disponibles sont affichées."},
+        {"Gameplay/Practice starts the configured target level directly.", "Normal/Entraînement lance directement le niveau configuré."}
     };
     static const std::unordered_map<std::string, std::string> ru = {
         {"Choose a section", "Выберите раздел"}, {"Custom Keybinds", "Свои клавиши"},
@@ -74,7 +112,26 @@ inline std::string tr(std::string_view key) {
         {"Recording saved.", "Запись сохранена."}, {"Clear Saved Steps", "Очистить шаги"},
         {"Start Recording", "Начать запись"}, {"Close", "Закрыть"},
         {"English", "Английский"}, {"Spanish", "Испанский"}, {"French", "Французский"}, {"Russian", "Русский"},
-        {"Profile name / duplicate name", "Имя профиля / копии"}
+        {"Profile name / duplicate name", "Имя профиля / копии"},
+        {"Jump - Player 1", "Прыжок — Игрок 1"}, {"Jump - Player 2", "Прыжок — Игрок 2"},
+        {"Place Practice Checkpoint", "Поставить чекпоинт"}, {"Delete Practice Checkpoint", "Удалить чекпоинт"},
+        {"Restart Level", "Перезапустить уровень"}, {"Find Target Level (Gameplay)", "Найти уровень (Обычный)"},
+        {"Find Target Level (Practice)", "Найти уровень (Практика)"},
+        {"Move Selection Up", "Переместить вверх"}, {"Move Selection Left", "Переместить влево"},
+        {"Move Selection Down", "Переместить вниз"}, {"Move Selection Right", "Переместить вправо"},
+        {"Rotate 90 Degrees Left", "Повернуть на 90° влево"}, {"Rotate 90 Degrees Right", "Повернуть на 90° вправо"},
+        {"Open My Levels", "Открыть мои уровни"}, {"Open Online Level Browser", "Открыть поиск уровней"},
+        {"Open Pause Menu", "Открыть меню паузы"}, {"Open Main Menu", "Открыть главное меню"},
+        {"Unassigned", "Не назначено"}, {"Set", "Назначить"}, {"Clear", "Очистить"},
+        {"ADD / REPLACE", "ДОБАВИТЬ / ЗАМЕНИТЬ"}, {"Ready. ADD mode is active.", "Готово. Режим ДОБАВИТЬ активен."},
+        {"Duplicate keys in the same context are blocked. Up to 6 bindings per action.", "Дубликаты клавиш в одном контексте запрещены. До 6 назначений на действие."},
+        {"All keys for this action were cleared.", "Все клавиши этого действия очищены."},
+        {"Global Profiles", "Общие профили"}, {"Previous", "Назад"}, {"Next", "Далее"},
+        {"Save", "Сохранить"}, {"Apply", "Применить"}, {"Duplicate", "Дублировать"}, {"Rename", "Переименовать"},
+        {"Delete", "Удалить"}, {"Create", "Создать"}, {"No profile selected", "Профиль не выбран"},
+        {"Profiles capture every setting declared by New Keybinds.", "Профили сохраняют все настройки New Keybinds."},
+        {"Only actions with an implemented destination are shown.", "Показаны только доступные действия."},
+        {"Gameplay/Practice starts the configured target level directly.", "Обычный/Практика запускает заданный уровень напрямую."}
     };
     const std::unordered_map<std::string, std::string>* table = nullptr;
     if (lang == "es") table = &es;
