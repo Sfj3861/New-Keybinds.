@@ -53,3 +53,11 @@ A dedicated configuration hub for Geometry Dash Android 2.2091 and Geode SDK 6.0
 - C++23
 
 CI compilation proves that the project compiles, not that every runtime behavior has been tested on-device.
+
+/Known Issues — Beta 1
+
+- Editor crashes: Pressing certain custom keybinds in the editor may cause a crash.
+- Practice Mode (Android): The Z and X keybinds for Practice Mode currently do not work on Android.
+- Editor features: Hitboxes and Ignore Damage currently only activate in the editor.
+
+These issues are known and may be addressed in future updates. This is a beta release, so bugs and unexpected behavior may occur./
