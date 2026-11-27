@@ -134,7 +134,6 @@ class SequencePlayback : public CCNode {
         else if (action == "P2 UP") { play->queueButton(1, false, true, 0.0); m_p2=false; }
         else if (action == "Smart Controls P1 tap") { play->queueButton(1,true,false,0.0); play->queueButton(1,false,false,0.0); }
         else if (action == "Smart Controls P2 tap") { play->queueButton(1,true,true,0.0); play->queueButton(1,false,true,0.0); }
-        else if (action == "restart-level DOWN") { play->resetLevel(); }
     }
 public:
     bool init() override {
