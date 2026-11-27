@@ -5,10 +5,107 @@
 #include <Geode/binding/GJSearchObject.hpp>
 #include <Geode/binding/MenuLayer.hpp>
 #include <Geode/binding/FLAlertLayer.hpp>
+#include <Geode/binding/GameLevelManager.hpp>
+#include <Geode/binding/LevelInfoLayer.hpp>
+#include <Geode/binding/LevelDownloadDelegate.hpp>
+#include "SequenceRecorder.hpp"
 #include <Geode/modify/UILayer.hpp>
 #include <algorithm>
+#include <cctype>
+#include <cstdlib>
 
 using namespace geode::prelude;
+
+namespace {
+bool s_startPracticeMode = false;
+
+void enterTargetLevel(GJGameLevel* level, bool practice) {
+    if (!level || level->m_levelString.empty() || level->m_levelNotDownloaded) {
+        FLAlertLayer::create("New Keybinds", "The level data is not ready to play.", "OK")->show();
+        return;
+    }
+    s_startPracticeMode = practice;
+    auto info = LevelInfoLayer::create(level, false);
+    if (!info) {
+        s_startPracticeMode = false;
+        FLAlertLayer::create("New Keybinds", "Could not create the level launch screen.", "OK")->show();
+        return;
+    }
+    info->onPlay(nullptr);
+}
+
+class TargetLevelDownloadHandler : public CCNode, public LevelDownloadDelegate {
+    int m_targetID = 0;
+    bool m_practice = false;
+    LevelDownloadDelegate* m_previous = nullptr;
+public:
+    static TargetLevelDownloadHandler* create(int id, bool practice, LevelDownloadDelegate* previous) {
+        auto ret = new TargetLevelDownloadHandler();
+        ret->m_targetID = id;
+        ret->m_practice = practice;
+        ret->m_previous = previous;
+        if (ret->init()) { ret->autorelease(); return ret; }
+        delete ret;
+        return nullptr;
+    }
+    bool init() override { return CCNode::init(); }
+    void restoreDelegate() {
+        auto manager = GameLevelManager::sharedState();
+        if (manager && manager->m_levelDownloadDelegate == this)
+            manager->m_levelDownloadDelegate = m_previous;
+    }
+    void levelDownloadFinished(GJGameLevel* downloaded) override {
+        auto manager = GameLevelManager::sharedState();
+        restoreDelegate();
+        auto level = manager ? manager->getSavedLevel(m_targetID) : nullptr;
+        if (!level) level = downloaded;
+        if (!level || level->m_levelString.empty() || level->m_levelNotDownloaded) {
+            FLAlertLayer::create("New Keybinds", "Geometry Dash returned level information without playable level data.", "OK")->show();
+        } else {
+            enterTargetLevel(level, m_practice);
+        }
+        this->removeFromParentAndCleanup(true);
+    }
+    void levelDownloadFailed(int levelID) override {
+        restoreDelegate();
+        auto message = "Could not download level " + std::to_string(levelID) + ". Check the ID and your connection.";
+        FLAlertLayer::create("New Keybinds", message.c_str(), "OK")->show();
+        this->removeFromParentAndCleanup(true);
+    }
+};
+
+void launchTargetLevel(bool practice) {
+    auto rawID = Mod::get()->getSettingValue<std::string>("instant-level-id");
+    if (rawID.empty()) rawID = "6508283";
+    if (!std::all_of(rawID.begin(), rawID.end(), [](unsigned char ch) { return std::isdigit(ch); })) {
+        FLAlertLayer::create("New Keybinds", "Target Level ID must contain digits only.", "OK")->show();
+        return;
+    }
+    int levelID = std::atoi(rawID.c_str());
+    if (levelID <= 0) {
+        FLAlertLayer::create("New Keybinds", "Enter a valid Target Level ID.", "OK")->show();
+        return;
+    }
+    auto manager = GameLevelManager::sharedState();
+    if (!manager) return;
+    if (auto saved = manager->getSavedLevel(levelID);
+        saved && !saved->m_levelString.empty() && !saved->m_levelNotDownloaded) {
+        enterTargetLevel(saved, practice);
+        return;
+    }
+    if (manager->m_levelDownloadDelegate) {
+        FLAlertLayer::create("New Keybinds", "Another level download is already running. Try again when it finishes.", "OK")->show();
+        return;
+    }
+    auto scene = CCDirector::sharedDirector()->getRunningScene();
+    if (!scene) return;
+    auto handler = TargetLevelDownloadHandler::create(levelID, practice, manager->m_levelDownloadDelegate);
+    if (!handler) return;
+    scene->addChild(handler);
+    manager->m_levelDownloadDelegate = handler;
+    manager->downloadLevel(levelID, false);
+}
+}
 
 class $modify(NewKeybindsUILayer, UILayer) {
     bool isGameplayLayerActive() const {
