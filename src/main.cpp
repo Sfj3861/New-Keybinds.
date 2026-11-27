@@ -112,6 +112,65 @@ void launchTargetLevel(bool practice) {
 }
 
 namespace nkb {
+class SequencePlayback : public CCNode {
+    std::vector<std::pair<long long, std::string>> m_steps;
+    size_t m_index = 0;
+    std::chrono::steady_clock::time_point m_start;
+    bool m_p1 = false, m_p2 = false;
+    void finish() {
+        if (auto play = PlayLayer::get()) {
+            if (m_p1) play->queueButton(1, false, false, 0.0);
+            if (m_p2) play->queueButton(1, false, true, 0.0);
+        }
+        unscheduleUpdate();
+        removeFromParentAndCleanup(true);
+    }
+    void apply(std::string const& action) {
+        auto play = PlayLayer::get();
+        if (!play) { finish(); return; }
+        if (action == "P1 DOWN") { play->queueButton(1, true, false, 0.0); m_p1=true; }
+        else if (action == "P1 UP") { play->queueButton(1, false, false, 0.0); m_p1=false; }
+        else if (action == "P2 DOWN") { play->queueButton(1, true, true, 0.0); m_p2=true; }
+        else if (action == "P2 UP") { play->queueButton(1, false, true, 0.0); m_p2=false; }
+        else if (action == "Smart Controls P1 tap") { play->queueButton(1,true,false,0.0); play->queueButton(1,false,false,0.0); }
+        else if (action == "Smart Controls P2 tap") { play->queueButton(1,true,true,0.0); play->queueButton(1,false,true,0.0); }
+        else if (action == "restart-level DOWN") { play->resetLevel(); }
+    }
+public:
+    bool init() override {
+        if (!CCNode::init()) return false;
+        auto raw=Mod::get()->getSavedValue<std::vector<std::string>>("instant-sequence-draft",{});
+        for (auto const& line : raw) {
+            auto sep=line.find(" ms | ");
+            if(sep==std::string::npos) continue;
+            try { auto ms=std::stoll(line.substr(0,sep)); m_steps.emplace_back(ms,line.substr(sep+6)); } catch (...) {}
+        }
+        if(m_steps.empty()) return false;
+        m_start=std::chrono::steady_clock::now();
+        scheduleUpdate();
+        return true;
+    }
+    void update(float) override {
+        if(!PlayLayer::get()) { finish(); return; }
+        auto elapsed=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now()-m_start).count();
+        while(m_index<m_steps.size() && elapsed>=m_steps[m_index].first) apply(m_steps[m_index++].second);
+        if(m_index>=m_steps.size()) finish();
+    }
+    static SequencePlayback* create() {
+        auto ret=new SequencePlayback();
+        if(ret->init()) { ret->autorelease(); return ret; }
+        delete ret; return nullptr;
+    }
+};
+void replaySequence() {
+    if(!PlayLayer::get()) { FLAlertLayer::create("New Keybinds","Start a level before replaying a saved sequence.","OK")->show(); return; }
+    auto playback=SequencePlayback::create();
+    if(!playback) { FLAlertLayer::create("New Keybinds","The saved sequence contains no replayable input events.","OK")->show(); return; }
+    PlayLayer::get()->addChild(playback,2000);
+}
+}
+
+namespace nkb {
 void launchTargetLevel(bool practice) {
     ::launchTargetLevel(practice);
 }
