@@ -683,50 +683,76 @@ public:
 };
 
 class InstantSequencePopup : public Popup {
+    CCLabelBMFont* m_status = nullptr;
+
+    std::string sequenceText() {
+        auto steps = Mod::get()->getSavedValue<std::vector<std::string>>("instant-sequence-draft", {});
+        if (steps.empty()) return nkb::tr("No steps recorded yet.");
+        std::string text;
+        size_t first = steps.size() > 9 ? steps.size() - 9 : 0;
+        for (size_t i = first; i < steps.size(); ++i)
+            text += std::to_string(i + 1) + ". " + steps[i] + "\n";
+        return text;
+    }
+
+    void refreshList() {
+        if (auto old = m_mainLayer->getChildByID("sequence-steps-label"))
+            old->removeFromParentAndCleanup(true);
+        auto text = sequenceText();
+        auto list = CCLabelBMFont::create(text.c_str(), "goldFont.fnt");
+        list->setID("sequence-steps-label");
+        list->setScale(.29f);
+        list->setPosition({m_size.width / 2.f, m_size.height - 82.f});
+        m_mainLayer->addChild(list);
+    }
+
 protected:
     bool init() override {
-        if (!Popup::init(360.f, 285.f)) return false;
-        setTitle("Instant Actions - Sequence Draft");
-
-        auto steps = Mod::get()->getSavedValue<std::vector<std::string>>("instant-sequence-draft", {});
-        std::string text = steps.empty() ? "No draft steps yet." : "";
-        for (size_t i = 0; i < steps.size(); ++i)
-            text += std::to_string(i + 1) + ". " + steps[i] + "\n";
-
-        auto list = CCLabelBMFont::create(text.c_str(), "goldFont.fnt");
-        list->setScale(.34f);
-        list->setPosition({m_size.width / 2.f, m_size.height - 78.f});
-        m_mainLayer->addChild(list);
+        if (!Popup::init(390.f, 300.f)) return false;
+        setTitle(nkb::tr("Saved sequence").c_str());
+        refreshList();
 
         auto menu = CCMenu::create();
-        menu->setPosition({m_size.width / 2.f, 65.f});
-        const char* labels[] = {"Add Pause Menu Step", "Add Level Browser Step", "Add Main Menu Step", "Clear Draft"};
-        for (int i = 0; i < 4; ++i) {
-            auto item = CCMenuItemExt::createSpriteExtra(
-                ButtonSprite::create(labels[i], "goldFont.fnt", "GJ_button_01.png", .48f),
-                [i](CCObject*) {
-                    auto mod = Mod::get();
-                    auto values = mod->getSavedValue<std::vector<std::string>>("instant-sequence-draft", {});
-                    if (i == 0) values.push_back("Open Pause Menu");
-                    else if (i == 1) values.push_back("Open Level Browser");
-                    else if (i == 2) values.push_back("Open Main Menu");
-                    else values.clear();
-                    mod->setSavedValue("instant-sequence-draft", values);
-                    FLAlertLayer::create("Sequence Draft",
-                        "Draft saved. Reopen this panel to view the changes. Drafts are not automatically replayed.",
-                        "OK")->show();
-                });
-            item->setPosition({0.f, -i * 34.f});
-            menu->addChild(item);
-        }
+        menu->setPosition({m_size.width / 2.f, 67.f});
+        auto record = CCMenuItemExt::createSpriteExtra(
+            ButtonSprite::create(nkb::tr("Start Recording").c_str(), "goldFont.fnt", "GJ_button_01.png", .52f),
+            [this](CCObject*) {
+                if (nkb::isRecording()) {
+                    bool saved = nkb::saveRecording();
+                    if (auto play = PlayLayer::get()) {
+                        if (auto floating = play->getChildByID("new-keybinds-floating-save-menu"))
+                            floating->removeFromParentAndCleanup(true);
+                    }
+                    m_status->setString(saved ? nkb::tr("Recording saved.").c_str()
+                                              : nkb::tr("No steps recorded yet.").c_str());
+                    refreshList();
+                } else {
+                    nkb::startRecording();
+                    nkb::showRecorderButton();
+                    m_status->setString(nkb::tr("Recording started. Play, then tap the red floating button to save.").c_str());
+                }
+            });
+        record->setPosition({-90.f, 0.f});
+        menu->addChild(record);
 
-        auto note = CCLabelBMFont::create(
-            "Stores UI action notes only; it does not automate gameplay.",
+        auto clear = CCMenuItemExt::createSpriteExtra(
+            ButtonSprite::create(nkb::tr("Clear Saved Steps").c_str(), "goldFont.fnt", "GJ_button_06.png", .47f),
+            [this](CCObject*) {
+                Mod::get()->setSavedValue("instant-sequence-draft", std::vector<std::string>{});
+                refreshList();
+                m_status->setString(nkb::tr("No steps recorded yet.").c_str());
+            });
+        clear->setPosition({100.f, 0.f});
+        menu->addChild(clear);
+
+        m_status = CCLabelBMFont::create(
+            nkb::isRecording() ? nkb::tr("Recording started. Play, then tap the red floating button to save.").c_str()
+                               : nkb::tr("Saved sequence").c_str(),
             "goldFont.fnt");
-        note->setScale(.28f);
-        note->setPosition({m_size.width / 2.f, 18.f});
-        note->setColor({170, 180, 195});
-        m_mainLayer->addChild(note);
+        m_status->setScale(.27f);
+        m_status->setPosition({m_size.width / 2.f, 25.f});
+        m_status->setColor({180, 205, 230});
+        m_mainLayer->addChild(m_status);
         m_mainLayer->addChild(menu);
         return true;
     }
