@@ -15,5 +15,5 @@ if (NOT DEFINED ENV{GEODE_SDK})
     message(FATAL_ERROR "Unable to find Geode SDK! Define GEODE_SDK to point to your Geode SDK.")
 endif()
 
-add_subdirectory($ENV{GEODE_SDK} \${CMAKE_CURRENT_BINARY_DIR}/geode)
+add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 setup_geode_mod(NewKeybinds)
