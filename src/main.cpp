@@ -9,6 +9,7 @@
 #include <Geode/binding/LevelInfoLayer.hpp>
 #include <Geode/binding/LevelDownloadDelegate.hpp>
 #include "SequenceRecorder.hpp"
+#include "Localization.hpp"
 #include "InstantActions.hpp"
 #include <Geode/modify/UILayer.hpp>
 #include <Geode/modify/PlayLayer.hpp>
@@ -60,7 +61,8 @@ public:
         auto manager = GameLevelManager::sharedState();
         restoreDelegate();
         auto level = manager ? manager->getSavedLevel(m_targetID) : nullptr;
-        if (!level) level = downloaded;
+        if (!level || level->m_levelString.empty() || level->m_levelNotDownloaded)
+            level = downloaded;
         if (!level || level->m_levelString.empty() || level->m_levelNotDownloaded) {
             FLAlertLayer::create("New Keybinds", "Geometry Dash returned level information without playable level data.", "OK")->show();
         } else {
@@ -121,7 +123,7 @@ void showRecorderButton() {
     auto menu = CCMenu::create();
     menu->setID("new-keybinds-floating-save-menu");
     menu->setPosition({0.f, 0.f});
-    auto sprite = ButtonSprite::create("SAVE STEPS", "goldFont.fnt", "GJ_button_06.png", .58f);
+    auto sprite = ButtonSprite::create(tr("Save Steps").c_str(), "goldFont.fnt", "GJ_button_06.png", .58f);
     auto save = CCMenuItemExt::createSpriteExtra(sprite, [](CCObject* sender) {
         bool saved = saveRecording();
         if (auto parent = static_cast<CCNode*>(sender)->getParent())
