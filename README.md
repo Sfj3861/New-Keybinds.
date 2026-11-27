@@ -21,9 +21,19 @@ A dedicated configuration hub for Geometry Dash Android 2.2091 and Geode SDK 6.0
 - Position and visibility are applied when the next level's UILayer is created.
 
 ### Instant Actions
-- Functional destinations: target-level search, online level browser, My Levels, pause menu and main menu.
-- Target Gameplay/Practice actions currently open search results for the configured level ID. They do not automatically start a level.
-- Sequence Draft stores UI action notes only and does not replay inputs.
+- Gameplay and Practice actions use the configured target ID.
+- A saved level is launched through Geometry Dash's LevelInfoLayer Play flow. If it is not locally downloaded, the mod requests the download and launches it when the level data is ready.
+- Practice Mode is enabled immediately after Geometry Dash creates the PlayLayer.
+- Online level browser, My Levels, pause menu and main menu remain available.
+- Sequence recording stores timestamped actions routed through New Keybinds keybinds and Smart Controls.
+- While recording during gameplay, a floating red SAVE STEPS button stores the captured sequence. The sequence panel can start a recording, review the saved steps or clear them.
+- Saved sequences are records only; automatic replay of saved sequences is not implemented.
+
+### Interface
+- The Mods Library entry uses a round Geode-style icon button.
+- Popups retain the standard top-right close (X) control.
+- Smart Controls size and opacity use draggable sliders.
+- The hub has English, Spanish, French and Russian language selectors. The translations cover the main hub, Smart Controls and Instant Actions; some legacy labels in the detailed keybind/profile pages may remain English.
 
 ### Global Profiles
 - Dynamic named profiles: create, select, save, apply, duplicate, rename and delete.
@@ -32,9 +42,10 @@ A dedicated configuration hub for Geometry Dash Android 2.2091 and Geode SDK 6.0
 
 ## Known limitations
 - All changes still require on-device playtesting on Geometry Dash Android 2.2091.
-- Directly launching the configured online level without selecting a search result is not implemented.
+- Direct level launch and Practice Mode launch need in-game testing on Android 2.2091, including online download callbacks.
+- Recording currently captures New Keybinds keybind events, its Smart Controls taps and the Instant Actions shortcuts; it does not yet capture every native touch, mouse or keyboard event in Geometry Dash.
+- Saved sequences are not automatically replayed.
 - Smart Controls are tap buttons only; hold, multi-touch and gesture recognition are not implemented.
-- English is the current UI language; Spanish, French and Russian translations are not included yet.
 
 ## Build
 - Android 64-bit
