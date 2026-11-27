@@ -47,7 +47,15 @@ inline std::string tr(std::string_view key) {
         {"Delete", "Eliminar"}, {"Create", "Crear"}, {"No profile selected", "Ningún perfil seleccionado"},
         {"Profiles capture every setting declared by New Keybinds.", "Los perfiles guardan todos los ajustes de New Keybinds."},
         {"Only actions with an implemented destination are shown.", "Solo se muestran acciones con destino disponible."},
-        {"Gameplay/Practice starts the configured target level directly.", "Normal/Práctica inicia directamente el nivel configurado."}
+        {"Gameplay/Practice starts the configured target level directly.", "Normal/Práctica inicia directamente el nivel configurado."},
+        {"Smart Controls: ON", "Controles inteligentes: ACTIVADOS"}, {"Smart Controls: OFF", "Controles inteligentes: DESACTIVADOS"},
+        {"Smart Controls enabled.", "Controles inteligentes activados."}, {"Smart Controls disabled.", "Controles inteligentes desactivados."},
+        {"P1: ON", "P1: ACTIVADO"}, {"P1: OFF", "P1: DESACTIVADO"}, {"P2: ON", "P2: ACTIVADO"}, {"P2: OFF", "P2: DESACTIVADO"},
+        {"Player 1 button enabled.", "Botón del jugador 1 activado."}, {"Player 1 button disabled.", "Botón del jugador 1 desactivado."},
+        {"Player 2 button enabled.", "Botón del jugador 2 activado."}, {"Player 2 button disabled.", "Botón del jugador 2 desactivado."},
+        {"Save Steps", "Guardar pasos"}, {"Capture cancelled.", "Captura cancelada."},
+        {"A maximum of 6 keys is allowed per action.", "Se permiten como máximo 6 teclas por acción."},
+        {"Press Set, then press a physical key. Modifiers such as Ctrl/Shift are captured.", "Pulsa Asignar y después una tecla física. También se capturan Ctrl y Shift."}
     };
     static const std::unordered_map<std::string, std::string> fr = {
         {"Choose a section", "Choisir une section"}, {"Custom Keybinds", "Touches personnalisées"},
@@ -89,7 +97,15 @@ inline std::string tr(std::string_view key) {
         {"Delete", "Supprimer"}, {"Create", "Créer"}, {"No profile selected", "Aucun profil sélectionné"},
         {"Profiles capture every setting declared by New Keybinds.", "Les profils enregistrent tous les paramètres de New Keybinds."},
         {"Only actions with an implemented destination are shown.", "Seules les actions disponibles sont affichées."},
-        {"Gameplay/Practice starts the configured target level directly.", "Normal/Entraînement lance directement le niveau configuré."}
+        {"Gameplay/Practice starts the configured target level directly.", "Normal/Entraînement lance directement le niveau configuré."},
+        {"Smart Controls: ON", "Commandes tactiles : ACTIVÉES"}, {"Smart Controls: OFF", "Commandes tactiles : DÉSACTIVÉES"},
+        {"Smart Controls enabled.", "Commandes tactiles activées."}, {"Smart Controls disabled.", "Commandes tactiles désactivées."},
+        {"P1: ON", "J1 : ACTIVÉ"}, {"P1: OFF", "J1 : DÉSACTIVÉ"}, {"P2: ON", "J2 : ACTIVÉ"}, {"P2: OFF", "J2 : DÉSACTIVÉ"},
+        {"Player 1 button enabled.", "Bouton du joueur 1 activé."}, {"Player 1 button disabled.", "Bouton du joueur 1 désactivé."},
+        {"Player 2 button enabled.", "Bouton du joueur 2 activé."}, {"Player 2 button disabled.", "Bouton du joueur 2 désactivé."},
+        {"Save Steps", "Enregistrer les étapes"}, {"Capture cancelled.", "Capture annulée."},
+        {"A maximum of 6 keys is allowed per action.", "6 touches maximum sont autorisées par action."},
+        {"Press Set, then press a physical key. Modifiers such as Ctrl/Shift are captured.", "Appuyez sur Définir puis sur une touche physique. Ctrl et Maj sont également détectés."}
     };
     static const std::unordered_map<std::string, std::string> ru = {
         {"Choose a section", "Выберите раздел"}, {"Custom Keybinds", "Свои клавиши"},
@@ -131,7 +147,15 @@ inline std::string tr(std::string_view key) {
         {"Delete", "Удалить"}, {"Create", "Создать"}, {"No profile selected", "Профиль не выбран"},
         {"Profiles capture every setting declared by New Keybinds.", "Профили сохраняют все настройки New Keybinds."},
         {"Only actions with an implemented destination are shown.", "Показаны только доступные действия."},
-        {"Gameplay/Practice starts the configured target level directly.", "Обычный/Практика запускает заданный уровень напрямую."}
+        {"Gameplay/Practice starts the configured target level directly.", "Обычный/Практика запускает заданный уровень напрямую."},
+        {"Smart Controls: ON", "Умное управление: ВКЛ"}, {"Smart Controls: OFF", "Умное управление: ВЫКЛ"},
+        {"Smart Controls enabled.", "Умное управление включено."}, {"Smart Controls disabled.", "Умное управление выключено."},
+        {"P1: ON", "Игрок 1: ВКЛ"}, {"P1: OFF", "Игрок 1: ВЫКЛ"}, {"P2: ON", "Игрок 2: ВКЛ"}, {"P2: OFF", "Игрок 2: ВЫКЛ"},
+        {"Player 1 button enabled.", "Кнопка игрока 1 включена."}, {"Player 1 button disabled.", "Кнопка игрока 1 выключена."},
+        {"Player 2 button enabled.", "Кнопка игрока 2 включена."}, {"Player 2 button disabled.", "Кнопка игрока 2 выключена."},
+        {"Save Steps", "Сохранить шаги"}, {"Capture cancelled.", "Захват отменён."},
+        {"A maximum of 6 keys is allowed per action.", "Для одного действия разрешено не более 6 клавиш."},
+        {"Press Set, then press a physical key. Modifiers such as Ctrl/Shift are captured.", "Нажмите Назначить, затем физическую клавишу. Ctrl и Shift тоже учитываются."}
     };
     const std::unordered_map<std::string, std::string>* table = nullptr;
     if (lang == "es") table = &es;
