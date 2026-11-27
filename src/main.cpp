@@ -308,6 +308,13 @@ class $modify(NewKeybindsUILayer, UILayer) {
                 return ListenerResult::Stop;
             });
 
+        this->addEventListener(KeybindSettingPressedEventV3(Mod::get(), "replay-sequence"),
+            [](Keybind const&, bool down, bool repeat, double) {
+                if (!down || repeat) return ListenerResult::Propagate;
+                nkb::replaySequence();
+                return ListenerResult::Stop;
+            });
+
         forwardBinding("place-checkpoint", KEY_Z);
         forwardBinding("delete-checkpoint", KEY_X);
         forwardBinding("restart-level", KEY_R);
