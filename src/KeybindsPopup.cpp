@@ -71,6 +71,12 @@ std::string bindingText(std::string_view id) {
     return result;
 }
 
+void setBindings(std::string_view id, std::vector<Keybind> const& bindings) {
+    if (auto setting = cast::typeinfo_pointer_cast<KeybindSettingV3>(Mod::get()->getSetting(id))) {
+        setting->setValue(bindings);
+    }
+}
+
 void addButton(CCMenu* menu, std::string const& text, CCPoint position,
                std::function<void()> callback, float scale = .48f,
                char const* texture = "GJ_button_01.png") {
@@ -222,7 +228,7 @@ class KeybindPagePopup : public Popup {
             bindings.push_back(pressed);
         }
 
-        mod->setSettingValue<std::vector<Keybind>>(m_captureID, bindings);
+        setBindings(m_captureID, bindings);
         auto assigned = pressed.toString();
         m_captureID.clear();
         updateValues();
@@ -277,7 +283,7 @@ protected:
                 [this, id = std::string(entry.id)] { startCapture(id); }, .40f);
             addButton(menu, "Clear", {399.f, y - 2.f},
                 [this, id = std::string(entry.id)] {
-                    Mod::get()->setSettingValue<std::vector<Keybind>>(id, {});
+                    setBindings(id, {});
                     if (m_captureID == id) m_captureID.clear();
                     updateValues();
                     m_status->setString("All keys for this action were cleared.");
