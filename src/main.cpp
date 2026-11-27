@@ -11,6 +11,7 @@
 #include "SequenceRecorder.hpp"
 #include "InstantActions.hpp"
 #include <Geode/modify/UILayer.hpp>
+#include <Geode/modify/PlayLayer.hpp>
 #include <algorithm>
 #include <cctype>
 #include <cstdlib>
@@ -104,7 +105,7 @@ void launchTargetLevel(bool practice) {
     if (!handler) return;
     scene->addChild(handler);
     manager->m_levelDownloadDelegate = handler;
-    manager->downloadLevel(levelID, false);
+    manager->downloadLevel(levelID, false, 0);
 }
 }
 
@@ -266,15 +267,15 @@ class $modify(NewKeybindsUILayer, UILayer) {
 
 // Practice-mode launch is applied after Geometry Dash creates the level through its own Play action.
 class $modify(NewKeybindsPlayLayer, PlayLayer) {
-    bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
-        if (!PlayLayer::init(level, useReplay, dontCreateObjects)) return false;
+    bool init(GJGameLevel* level, bool dontCreateObjects) {
+        if (!PlayLayer::init(level, dontCreateObjects)) return false;
         if (s_startPracticeMode) {
             s_startPracticeMode = false;
             this->togglePracticeMode(true);
         }
         return true;
     }
-}
+};
 
 // Universal shortcuts are active in menus as well as gameplay.
 $execute {
