@@ -1,5 +1,7 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/EditorUI.hpp>
+#include <Geode/binding/LevelBrowserLayer.hpp>
+#include <Geode/binding/GJSearchObject.hpp>
 
 using namespace geode::prelude;
 
@@ -12,7 +14,6 @@ class $modify(NewKeybindsEditorUI, EditorUI) {
     }
 
     bool isTopLevel() {
-        // Avoid stealing keyboard input while an IME/text-entry delegate is active.
         auto* ime = CCIMEDispatcher::sharedDispatcher();
         return !ime || !ime->hasDelegate();
     }
@@ -26,21 +27,30 @@ class $modify(NewKeybindsEditorUI, EditorUI) {
         this->addEventListener(
             KeybindSettingPressedEventV3(Mod::get(), std::string(id)),
             [this, key](Keybind const&, bool down, bool repeat, double timestamp) {
-                if (!down || repeat || !this->isTopLevel()) return ListenerResult::Propagate;
+                if (!down || repeat || !this->isTopLevel())
+                    return ListenerResult::Propagate;
                 this->passThroughKeyDown(key, timestamp);
                 return ListenerResult::Stop;
-            }
-        );
+            });
     }
 
     bool init(LevelEditorLayer* layer) {
         if (!EditorUI::init(layer)) return false;
-        this->defineEditorKeybind("move-obj-up", KEY_W);
-        this->defineEditorKeybind("move-obj-left", KEY_A);
-        this->defineEditorKeybind("move-obj-down", KEY_S);
-        this->defineEditorKeybind("move-obj-right", KEY_D);
-        this->defineEditorKeybind("rotate-ccw", KEY_Q);
-        this->defineEditorKeybind("rotate-cw", KEY_E);
+
+        defineEditorKeybind("move-obj-up", KEY_W);
+        defineEditorKeybind("move-obj-left", KEY_A);
+        defineEditorKeybind("move-obj-down", KEY_S);
+        defineEditorKeybind("move-obj-right", KEY_D);
+        defineEditorKeybind("rotate-ccw", KEY_Q);
+        defineEditorKeybind("rotate-cw", KEY_E);
+
+        this->addEventListener(
+            KeybindSettingPressedEventV3(Mod::get(), "instant-my-levels"),
+            [](Keybind const&, bool down, bool repeat, double) {
+                if (!down || repeat) return ListenerResult::Propagate;
+                switchToScene(LevelBrowserLayer::scene(GJSearchObject::create(SearchType::MyLevels, "")));
+                return ListenerResult::Stop;
+            });
         return true;
     }
 

@@ -3,11 +3,11 @@
   "gd": {
     "android": "2.2091"
   },
-  "version": "0.7.0-beta.1",
+  "version": "0.8.0-beta.1",
   "id": "sfj3861.new-keybinds",
   "name": "New Keybinds",
   "developer": "Sfj3861",
-  "description": "Customizable gameplay bindings, instant actions and mobile Smart Controls.",
+  "description": "In-mod custom keybind editor, context-aware actions, Smart Controls and full configuration profiles.",
   "links": {
     "source": "https://github.com/Sfj3861/New-Keybinds."
   },
@@ -122,42 +122,6 @@
         "E"
       ]
     },
-    "noclip-toggle": {
-      "name": "Noclip / Ignore Damage key",
-      "description": "Forward N to the game; requires a compatible feature handler.",
-      "type": "keybind",
-      "category": "gameplay",
-      "default": [
-        "N"
-      ]
-    },
-    "hitbox-toggle": {
-      "name": "Hitbox key",
-      "description": "Forward H to the game; requires a compatible feature handler.",
-      "type": "keybind",
-      "category": "gameplay",
-      "default": [
-        "H"
-      ]
-    },
-    "trail-toggle": {
-      "name": "Trail key",
-      "description": "Forward T to the game; requires a compatible feature handler.",
-      "type": "keybind",
-      "category": "gameplay",
-      "default": [
-        "T"
-      ]
-    },
-    "speedhack-toggle": {
-      "name": "Speedhack activation key",
-      "description": "Forward K to the game; requires a compatible feature handler.",
-      "type": "keybind",
-      "category": "gameplay",
-      "default": [
-        "K"
-      ]
-    },
     "smart-controls-title": {
       "name": "Smart Controls",
       "description": "On-screen touch buttons configuration.",
@@ -175,7 +139,7 @@
     },
     "instant-gameplay": {
       "name": "Open Gameplay Level",
-      "description": "Jump to the configured level browser query.",
+      "description": "Open search results for the configured target level. Select the level to continue.",
       "type": "keybind",
       "category": "gameplay",
       "default": [
@@ -184,7 +148,7 @@
     },
     "instant-practice": {
       "name": "Open Practice",
-      "description": "Open the configured level browser query for practice selection.",
+      "description": "Open search results for the configured target level. Select the level and Practice mode.",
       "type": "keybind",
       "category": "gameplay",
       "default": [
@@ -225,7 +189,7 @@
     },
     "instant-level-id": {
       "name": "Target Level ID",
-      "description": "Level ID used by the Gameplay/Practice actions.",
+      "description": "Level ID used by the Gameplay and Practice target searches.",
       "type": "string",
       "default": "6508283"
     },
