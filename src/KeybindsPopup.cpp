@@ -773,7 +773,7 @@ protected:
         setTitle(nkb::tr("Instant Actions").c_str());
 
         auto info = CCLabelBMFont::create(
-            "Only actions with an implemented destination are shown.",
+            nkb::tr("Only actions with an implemented destination are shown.").c_str(),
             "goldFont.fnt");
         info->setScale(.34f);
         info->setPosition({m_size.width / 2.f, m_size.height - 42.f});
@@ -782,35 +782,37 @@ protected:
         auto menu = CCMenu::create();
         menu->setPosition({m_size.width / 2.f, m_size.height / 2.f - 2.f});
 
-        struct ActionEntry { char const* title; char const* texture; std::function<void()> action; };
+        struct ActionEntry { std::string title; char const* texture; std::function<void()> action; };
         ActionEntry actions[] = {
-            {"Find Gameplay Level", "GJ_button_01.png", [] {
-                auto target = Mod::get()->getSettingValue<std::string>("instant-level-id");
-                if (target.empty()) target = "6508283";
-                switchToScene(LevelBrowserLayer::scene(
-                    GJSearchObject::create(SearchType::Type19, target + "&gameVersion=22")));
+            {nkb::tr("Launch target level (Normal)"), "GJ_button_01.png", [] {
+                nkb::recordStep("Instant Action: launch target normal");
+                nkb::launchTargetLevel(false);
             }},
-            {"Find Practice Level", "GJ_button_02.png", [] {
-                auto target = Mod::get()->getSettingValue<std::string>("instant-level-id");
-                if (target.empty()) target = "6508283";
-                switchToScene(LevelBrowserLayer::scene(
-                    GJSearchObject::create(SearchType::Type19, target + "&gameVersion=22")));
+            {nkb::tr("Launch target level (Practice)"), "GJ_button_02.png", [] {
+                nkb::recordStep("Instant Action: launch target practice");
+                nkb::launchTargetLevel(true);
             }},
-            {"Online Level Browser", "GJ_button_03.png", [] {
+            {nkb::tr("Online Level Browser"), "GJ_button_03.png", [] {
+                nkb::recordStep("Open Online Level Browser");
                 switchToScene(LevelBrowserLayer::scene(GJSearchObject::create(SearchType::Type19, "")));
             }},
-            {"My Levels", "GJ_button_04.png", [] {
+            {nkb::tr("My Levels"), "GJ_button_04.png", [] {
+                nkb::recordStep("Open My Levels");
                 switchToScene(LevelBrowserLayer::scene(GJSearchObject::create(SearchType::MyLevels, "")));
             }},
-            {"Pause Menu", "GJ_button_05.png", [] {
+            {nkb::tr("Pause Menu"), "GJ_button_05.png", [] {
+                nkb::recordStep("Open Pause Menu");
                 if (auto play = PlayLayer::get()) play->pauseGame(true);
                 else FLAlertLayer::create("Instant Actions", "No level is currently active.", "OK")->show();
             }},
-            {"Main Menu", "GJ_button_06.png", [] { switchToScene(MenuLayer::scene(false)); }}
+            {nkb::tr("Main Menu"), "GJ_button_06.png", [] {
+                nkb::recordStep("Open Main Menu");
+                switchToScene(MenuLayer::scene(false));
+            }}
         };
 
         for (int i = 0; i < 6; ++i) {
-            auto sprite = ButtonSprite::create(actions[i].title, "goldFont.fnt", actions[i].texture, .52f);
+            auto sprite = ButtonSprite::create(actions[i].title.c_str(), "goldFont.fnt", actions[i].texture, .52f);
             auto item = CCMenuItemExt::createSpriteExtra(sprite,
                 [action = actions[i].action](CCObject*) { action(); });
             item->setPosition({(i % 2 == 0) ? -98.f : 98.f, 78.f - (i / 2) * 63.f});
@@ -818,13 +820,13 @@ protected:
         }
 
         auto draft = CCMenuItemExt::createSpriteExtra(
-            ButtonSprite::create("Sequence Draft", "goldFont.fnt", "GJ_button_01.png", .56f),
+            ButtonSprite::create(nkb::tr("Saved sequence").c_str(), "goldFont.fnt", "GJ_button_01.png", .56f),
             [](CCObject*) { InstantSequencePopup::create()->show(); });
         draft->setPosition({0.f, -124.f});
         menu->addChild(draft);
 
         auto note = CCLabelBMFont::create(
-            "Gameplay/Practice open the target search; select the level to continue.",
+            "Gameplay/Practice starts the configured target level directly.",
             "goldFont.fnt");
         note->setScale(.27f);
         note->setPosition({m_size.width / 2.f, 18.f});
