@@ -66,7 +66,7 @@ BindingEntry const* findEntry(std::string_view id) {
 
 std::string bindingText(std::string_view id) {
     auto bindings = Mod::get()->getSettingValue<std::vector<Keybind>>(id);
-    if (bindings.empty()) return "Unassigned";
+    if (bindings.empty()) return nkb::tr("Unassigned");
 
     std::string result;
     for (auto const& binding : bindings) {
@@ -192,7 +192,7 @@ class KeybindPagePopup : public Popup {
         m_captureID = id;
         auto entry = findEntry(id);
         std::string prompt = "Press a key for ";
-        prompt += entry ? entry->label : id;
+        prompt += entry ? nkb::tr(entry->label) : id;
         prompt += ". Escape cancels.";
         m_status->setString(prompt.c_str());
     }
@@ -245,10 +245,10 @@ class KeybindPagePopup : public Popup {
 protected:
     bool init() override {
         if (!Popup::init(450.f, 380.f)) return false;
-        setTitle(("Custom Keybinds - " + m_page).c_str());
+        setTitle((nkb::tr("Custom Keybinds") + " - " + nkb::tr(m_page)).c_str());
 
         auto info = CCLabelBMFont::create(
-            "Press Set, then press a physical key. Modifiers such as Ctrl/Shift are captured.",
+            nkb::tr("Press Set, then press a physical key. Modifiers such as Ctrl/Shift are captured.").c_str(),
             "goldFont.fnt");
         info->setScale(.31f);
         info->setPosition({m_size.width / 2.f, m_size.height - 38.f});
@@ -257,7 +257,7 @@ protected:
         auto menu = CCMenu::create();
         menu->setPosition({0.f, 0.f});
 
-        addButton(menu, "ADD / REPLACE", {m_size.width - 91.f, m_size.height - 68.f},
+        addButton(menu, nkb::tr("ADD / REPLACE"), {m_size.width - 91.f, m_size.height - 68.f},
             [this] {
                 m_replace = !m_replace;
                 m_status->setString(m_replace ?
@@ -271,7 +271,8 @@ protected:
             auto const& entry = *entries[i];
             float y = startY - static_cast<float>(i) * 39.f;
 
-            auto name = CCLabelBMFont::create(entry.label, "goldFont.fnt");
+            auto translatedName = nkb::tr(entry.label);
+            auto name = CCLabelBMFont::create(translatedName.c_str(), "goldFont.fnt");
             name->setAnchorPoint({0.f, .5f});
             name->setScale(.32f);
             name->setPosition({16.f, y});
@@ -284,25 +285,25 @@ protected:
             m_mainLayer->addChild(current);
             m_valueLabels.emplace_back(entry.id, current);
 
-            addButton(menu, "Set", {330.f, y - 2.f},
+            addButton(menu, nkb::tr("Set"), {330.f, y - 2.f},
                 [this, id = std::string(entry.id)] { startCapture(id); }, .40f);
-            addButton(menu, "Clear", {399.f, y - 2.f},
+            addButton(menu, nkb::tr("Clear"), {399.f, y - 2.f},
                 [this, id = std::string(entry.id)] {
                     setBindings(id, {});
                     if (m_captureID == id) m_captureID.clear();
                     updateValues();
-                    m_status->setString("All keys for this action were cleared.");
+                    m_status->setString(nkb::tr("All keys for this action were cleared.").c_str());
                 }, .35f, "GJ_button_06.png");
         }
 
-        m_status = CCLabelBMFont::create("Ready. ADD mode is active.", "goldFont.fnt");
+        m_status = CCLabelBMFont::create(nkb::tr("Ready. ADD mode is active.").c_str(), "goldFont.fnt");
         m_status->setScale(.30f);
         m_status->setPosition({m_size.width / 2.f, 43.f});
         m_status->setColor({180, 220, 255});
         m_mainLayer->addChild(m_status);
 
         auto note = CCLabelBMFont::create(
-            "Duplicate keys in the same context are blocked. Up to 6 bindings per action.",
+            nkb::tr("Duplicate keys in the same context are blocked. Up to 6 bindings per action.").c_str(),
             "goldFont.fnt");
         note->setScale(.27f);
         note->setPosition({m_size.width / 2.f, 20.f});
@@ -601,13 +602,13 @@ class GlobalProfilesPopup : public Popup {
 protected:
     bool init() override {
         if (!Popup::init(470.f, 400.f)) return false;
-        setTitle("Global Profiles");
+        setTitle(nkb::tr("Global Profiles").c_str());
 
         auto mod = Mod::get();
         m_selected = mod->getSavedValue<std::string>("profiles-selected", "");
         m_page = std::max(0, mod->getSavedValue<int>("profiles-page", 0));
 
-        m_nameInput = TextInput::create(245.f, "Profile name / duplicate name");
+        m_nameInput = TextInput::create(245.f, nkb::tr("Profile name / duplicate name").c_str());
         m_nameInput->setMaxCharCount(28);
         m_nameInput->setPosition({m_size.width / 2.f, m_size.height - 48.f});
         m_mainLayer->addChild(m_nameInput);
@@ -636,25 +637,25 @@ protected:
                 }, .41f, id == m_selected ? "GJ_button_02.png" : "GJ_button_01.png");
         }
 
-        addButton(menu, "Previous", {80.f, 145.f}, [this] {
+        addButton(menu, nkb::tr("Previous"), {80.f, 145.f}, [this] {
             m_page = std::max(0, m_page - 1);
             Mod::get()->setSavedValue("profiles-page", m_page);
             m_status->setString("Page changed. Reopen this panel to refresh the list.");
         }, .36f, "GJ_button_03.png");
-        addButton(menu, "Next", {390.f, 145.f}, [this, pageCount] {
+        addButton(menu, nkb::tr("Next"), {390.f, 145.f}, [this, pageCount] {
             m_page = std::min(pageCount - 1, m_page + 1);
             Mod::get()->setSavedValue("profiles-page", m_page);
             m_status->setString("Page changed. Reopen this panel to refresh the list.");
         }, .36f, "GJ_button_03.png");
 
-        addButton(menu, "Save", {85.f, 96.f}, [this] { saveSelected(); }, .39f);
-        addButton(menu, "Apply", {235.f, 96.f}, [this] { loadSelected(); }, .39f, "GJ_button_02.png");
-        addButton(menu, "Duplicate", {385.f, 96.f}, [this] { duplicateSelected(); }, .36f, "GJ_button_03.png");
-        addButton(menu, "Rename", {85.f, 56.f}, [this] { renameSelected(); }, .36f);
-        addButton(menu, "Delete", {235.f, 56.f}, [this] { deleteSelected(); }, .36f, "GJ_button_06.png");
-        addButton(menu, "Create", {385.f, 56.f}, [this] { createProfile(); }, .36f, "GJ_button_04.png");
+        addButton(menu, nkb::tr("Save"), {85.f, 96.f}, [this] { saveSelected(); }, .39f);
+        addButton(menu, nkb::tr("Apply"), {235.f, 96.f}, [this] { loadSelected(); }, .39f, "GJ_button_02.png");
+        addButton(menu, nkb::tr("Duplicate"), {385.f, 96.f}, [this] { duplicateSelected(); }, .36f, "GJ_button_03.png");
+        addButton(menu, nkb::tr("Rename"), {85.f, 56.f}, [this] { renameSelected(); }, .36f);
+        addButton(menu, nkb::tr("Delete"), {235.f, 56.f}, [this] { deleteSelected(); }, .36f, "GJ_button_06.png");
+        addButton(menu, nkb::tr("Create"), {385.f, 56.f}, [this] { createProfile(); }, .36f, "GJ_button_04.png");
 
-        auto selectedText = hasSelection() ? ("Selected: " + profileName(m_selected)) : "No profile selected";
+        auto selectedText = hasSelection() ? ("Selected: " + profileName(m_selected)) : nkb::tr("No profile selected");
         auto selectedLabel = CCLabelBMFont::create(selectedText.c_str(), "goldFont.fnt");
         selectedLabel->setScale(.29f);
         selectedLabel->setPosition({m_size.width / 2.f, 32.f});
@@ -662,7 +663,7 @@ protected:
         m_mainLayer->addChild(selectedLabel);
 
         m_status = CCLabelBMFont::create(
-            "Profiles capture every setting declared by New Keybinds.",
+            nkb::tr("Profiles capture every setting declared by New Keybinds.").c_str(),
             "goldFont.fnt");
         m_status->setScale(.26f);
         m_status->setPosition({m_size.width / 2.f, 14.f});
@@ -826,7 +827,7 @@ protected:
         menu->addChild(draft);
 
         auto note = CCLabelBMFont::create(
-            "Gameplay/Practice starts the configured target level directly.",
+            nkb::tr("Gameplay/Practice starts the configured target level directly.").c_str(),
             "goldFont.fnt");
         note->setScale(.27f);
         note->setPosition({m_size.width / 2.f, 18.f});
