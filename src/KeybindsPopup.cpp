@@ -370,6 +370,22 @@ public:
 class SmartControlsPopup : public Popup {
     CCLabelBMFont* m_status = nullptr;
 
+    void onSizeSlider(CCObject* sender, CCControlEvent) {
+        auto slider = static_cast<CCControlSlider*>(sender);
+        float value = .5f + slider->getValue() * 1.5f;
+        Mod::get()->setSettingValue<float>("smart-button-size", value);
+        auto message = nkb::tr("Button size") + " = " + std::to_string(value);
+        m_status->setString(message.c_str());
+    }
+
+    void onOpacitySlider(CCObject* sender, CCControlEvent) {
+        auto slider = static_cast<CCControlSlider*>(sender);
+        float value = .2f + slider->getValue() * .8f;
+        Mod::get()->setSettingValue<float>("smart-button-opacity", value);
+        auto message = nkb::tr("Button opacity") + " = " + std::to_string(value);
+        m_status->setString(message.c_str());
+    }
+
     void adjust(std::string const& key, float delta, float min, float max) {
         auto mod = Mod::get();
         auto value = mod->getSettingValue<float>(key);
@@ -410,10 +426,37 @@ protected:
                 m_status->setString(enabled ? "Player 2 button enabled." : "Player 2 button disabled.");
             });
 
-        add("Size -", 110.f, 245.f, [this] { adjust("smart-button-size", -.1f, .5f, 2.f); });
-        add("Size +", 330.f, 245.f, [this] { adjust("smart-button-size", .1f, .5f, 2.f); });
-        add("Opacity -", 110.f, 200.f, [this] { adjust("smart-button-opacity", -.05f, .2f, 1.f); });
-        add("Opacity +", 330.f, 200.f, [this] { adjust("smart-button-opacity", .05f, .2f, 1.f); });
+        auto sizeLabel = CCLabelBMFont::create(nkb::tr("Button size").c_str(), "goldFont.fnt");
+        sizeLabel->setScale(.30f);
+        sizeLabel->setAnchorPoint({0.f, .5f});
+        sizeLabel->setPosition({48.f, 255.f});
+        m_mainLayer->addChild(sizeLabel);
+
+        auto sizeSlider = CCControlSlider::create(
+            "extensions/sliderTrack2.png", "extensions/sliderProgress2.png", "extensions/sliderThumb.png");
+        sizeSlider->setMinimumValue(0.f);
+        sizeSlider->setMaximumValue(1.f);
+        sizeSlider->setValue((mod->getSettingValue<float>("smart-button-size") - .5f) / 1.5f);
+        sizeSlider->setPosition({250.f, 255.f});
+        sizeSlider->addTargetWithActionForControlEvents(this,
+            cccontrol_selector(SmartControlsPopup::onSizeSlider), CCControlEventValueChanged);
+        m_mainLayer->addChild(sizeSlider);
+
+        auto opacityLabel = CCLabelBMFont::create(nkb::tr("Button opacity").c_str(), "goldFont.fnt");
+        opacityLabel->setScale(.30f);
+        opacityLabel->setAnchorPoint({0.f, .5f});
+        opacityLabel->setPosition({48.f, 215.f});
+        m_mainLayer->addChild(opacityLabel);
+
+        auto opacitySlider = CCControlSlider::create(
+            "extensions/sliderTrack2.png", "extensions/sliderProgress2.png", "extensions/sliderThumb.png");
+        opacitySlider->setMinimumValue(0.f);
+        opacitySlider->setMaximumValue(1.f);
+        opacitySlider->setValue((mod->getSettingValue<float>("smart-button-opacity") - .2f) / .8f);
+        opacitySlider->setPosition({250.f, 215.f});
+        opacitySlider->addTargetWithActionForControlEvents(this,
+            cccontrol_selector(SmartControlsPopup::onOpacitySlider), CCControlEventValueChanged);
+        m_mainLayer->addChild(opacitySlider);
 
         auto offset = [this, mod](std::string key, float delta) {
             auto value = mod->getSettingValue<float>(key);
