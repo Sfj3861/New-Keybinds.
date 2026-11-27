@@ -3,11 +3,11 @@
   "gd": {
     "android": "2.2091"
   },
-  "version": "0.8.0-beta.1",
+  "version": "0.9.0-beta.1",
   "id": "sfj3861.new-keybinds",
   "name": "New Keybinds",
   "developer": "Sfj3861",
-  "description": "In-mod custom keybind editor, context-aware actions, Smart Controls and full configuration profiles.",
+  "description": "Custom keybinds, direct level launch, timestamped action recording, Smart Controls and multilingual UI.",
   "links": {
     "source": "https://github.com/Sfj3861/New-Keybinds."
   },
@@ -138,8 +138,8 @@
       "type": "title"
     },
     "instant-gameplay": {
-      "name": "Open Gameplay Level",
-      "description": "Open search results for the configured target level. Select the level to continue.",
+      "name": "Launch Target Level (Normal)",
+      "description": "Downloads the configured target level if needed and starts it directly in Normal Mode.",
       "type": "keybind",
       "category": "gameplay",
       "default": [
@@ -147,8 +147,8 @@
       ]
     },
     "instant-practice": {
-      "name": "Open Practice",
-      "description": "Open search results for the configured target level. Select the level and Practice mode.",
+      "name": "Launch Target Level (Practice)",
+      "description": "Downloads the configured target level if needed and starts it directly in Practice Mode.",
       "type": "keybind",
       "category": "gameplay",
       "default": [
@@ -189,7 +189,7 @@
     },
     "instant-level-id": {
       "name": "Target Level ID",
-      "description": "Level ID used by the Gameplay and Practice target searches.",
+      "description": "Level ID used by direct Normal and Practice launch actions.",
       "type": "string",
       "default": "6508283"
     },
