@@ -8,6 +8,10 @@
 #include <Geode/binding/MenuLayer.hpp>
 #include <Geode/binding/PlayLayer.hpp>
 #include <Geode/binding/FLAlertLayer.hpp>
+#include <Geode/cocos/extensions/GUI/CCControlExtension/CCControlSlider.h>
+#include "Localization.hpp"
+#include "InstantActions.hpp"
+#include "SequenceRecorder.hpp"
 
 #include <algorithm>
 #include <array>
@@ -17,6 +21,7 @@
 #include <vector>
 
 using namespace geode::prelude;
+using namespace cocos2d::extension;
 
 namespace {
 struct BindingEntry {
@@ -324,10 +329,10 @@ class CustomKeybindsPopup : public Popup {
 protected:
     bool init() override {
         if (!Popup::init(370.f, 280.f)) return false;
-        setTitle("Custom Keybinds");
+        setTitle(nkb::tr("Custom Keybinds").c_str());
 
         auto info = CCLabelBMFont::create(
-            "Configure the controls here. No Geode settings popup is needed.",
+            nkb::tr("Configure the controls here. No Geode settings popup is needed.").c_str(),
             "goldFont.fnt");
         info->setScale(.35f);
         info->setPosition({m_size.width / 2.f, m_size.height - 45.f});
@@ -335,11 +340,11 @@ protected:
 
         auto menu = CCMenu::create();
         menu->setPosition({m_size.width / 2.f, m_size.height / 2.f - 4.f});
-        addButton(menu, "Gameplay", {0.f, 54.f},
+        addButton(menu, nkb::tr("Gameplay"), {0.f, 54.f},
             [] { KeybindPagePopup::create("Gameplay")->show(); }, .68f);
-        addButton(menu, "Editor", {0.f, 5.f},
+        addButton(menu, nkb::tr("Editor"), {0.f, 5.f},
             [] { KeybindPagePopup::create("Editor")->show(); }, .68f, "GJ_button_02.png");
-        addButton(menu, "Navigation", {0.f, -44.f},
+        addButton(menu, nkb::tr("Navigation"), {0.f, -44.f},
             [] { KeybindPagePopup::create("Navigation")->show(); }, .68f, "GJ_button_03.png");
 
         auto note = CCLabelBMFont::create(
@@ -376,7 +381,7 @@ class SmartControlsPopup : public Popup {
 protected:
     bool init() override {
         if (!Popup::init(440.f, 390.f)) return false;
-        setTitle("Smart Controls");
+        setTitle(nkb::tr("Smart Controls").c_str());
 
         auto mod = Mod::get();
         auto menu = CCMenu::create();
@@ -427,7 +432,7 @@ protected:
         add("P2 Y +", 345.f, 105.f, [offset] { offset("smart-p2-y", 10.f); });
 
         m_status = CCLabelBMFont::create(
-            "Touch controls are recreated when the next level loads.",
+            nkb::tr("Touch controls are recreated when the next level loads.").c_str(),
             "goldFont.fnt");
         m_status->setScale(.29f);
         m_status->setPosition({m_size.width / 2.f, 45.f});
@@ -435,7 +440,7 @@ protected:
         m_mainLayer->addChild(m_status);
 
         auto note = CCLabelBMFont::create(
-            "Current buttons send taps (press + release), not hold gestures.",
+            nkb::tr("Current buttons send taps (press + release), not hold gestures.").c_str(),
             "goldFont.fnt");
         note->setScale(.27f);
         note->setPosition({m_size.width / 2.f, 22.f});
@@ -696,7 +701,7 @@ class InstantActionPopup : public Popup {
 protected:
     bool init() override {
         if (!Popup::init(400.f, 300.f)) return false;
-        setTitle("Instant Actions");
+        setTitle(nkb::tr("Instant Actions").c_str());
 
         auto info = CCLabelBMFont::create(
             "Only actions with an implemented destination are shown.",
@@ -775,20 +780,20 @@ protected:
         if (!Popup::init(350.f, 310.f)) return false;
         setTitle("New Keybinds");
 
-        auto subtitle = CCLabelBMFont::create("Choose a section", "goldFont.fnt");
+        auto subtitle = CCLabelBMFont::create(nkb::tr("Choose a section").c_str(), "goldFont.fnt");
         subtitle->setScale(.42f);
         subtitle->setPosition({m_size.width / 2.f, m_size.height - 48.f});
         m_mainLayer->addChild(subtitle);
 
         auto menu = CCMenu::create();
         menu->setPosition({m_size.width / 2.f, m_size.height / 2.f - 5.f});
-        addButton(menu, "Custom Keybinds", {0.f, 79.f},
+        addButton(menu, nkb::tr("Custom Keybinds"), {0.f, 79.f},
             [] { CustomKeybindsPopup::create()->show(); }, .62f);
-        addButton(menu, "Instant Actions", {0.f, 29.f},
+        addButton(menu, nkb::tr("Instant Actions"), {0.f, 29.f},
             [] { InstantActionPopup::create()->show(); }, .62f, "GJ_button_02.png");
-        addButton(menu, "Smart Controls", {0.f, -21.f},
+        addButton(menu, nkb::tr("Smart Controls"), {0.f, -21.f},
             [] { SmartControlsPopup::create()->show(); }, .62f, "GJ_button_03.png");
-        addButton(menu, "Global Profiles", {0.f, -71.f},
+        addButton(menu, nkb::tr("Global Profiles"), {0.f, -71.f},
             [] { GlobalProfilesPopup::create()->show(); }, .62f, "GJ_button_04.png");
         m_mainLayer->addChild(menu);
         return true;
