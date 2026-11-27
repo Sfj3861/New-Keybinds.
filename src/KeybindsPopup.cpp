@@ -191,30 +191,44 @@ public:
 };
 
 class SmartControlsPopup : public Popup {
+    void refresh() { SmartControlsPopup::create()->show(); }
 protected:
     bool init() override {
-        if(!Popup::init(330.f,220.f)) return false;
+        if(!Popup::init(360.f,300.f)) return false;
         setTitle("Smart Controls");
-        auto info=CCLabelBMFont::create("Touch layout, personal profiles and settings", "goldFont.fnt");
-        info->setScale(.4f); info->setPosition({m_size.width/2,m_size.height-55.f}); m_mainLayer->addChild(info);
-        auto menu=CCMenu::create(); menu->setPosition({m_size.width/2,m_size.height/2-5.f});
-        auto settings=ButtonSprite::create("Configure Controls","goldFont.fnt","GJ_button_01.png",.75f);
-        auto item=CCMenuItemExt::createSpriteExtra(settings,[](CCObject*){openSettingsPopup(Mod::get());});
-        menu->addChild(item);
-        auto toggleText=Mod::get()->getSettingValue<bool>("smart-controls-enabled")?"Disable Smart Controls":"Enable Smart Controls";
-        auto toggle=CCMenuItemExt::createSpriteExtra(ButtonSprite::create(toggleText,"goldFont.fnt","GJ_button_02.png",.75f),[](CCObject*) {
-            auto current=Mod::get()->getSettingValue<bool>("smart-controls-enabled");
-            Mod::get()->setSettingValue("smart-controls-enabled",!current);
-            FLAlertLayer::create("Smart Controls","Setting changed. Re-enter gameplay to recreate the on-screen buttons.","OK")->show();
+        auto mod=Mod::get();
+        auto info=CCLabelBMFont::create("Internal touch-control settings","goldFont.fnt");
+        info->setScale(.42f); info->setPosition({m_size.width/2,m_size.height-42.f}); m_mainLayer->addChild(info);
+        auto menu=CCMenu::create(); menu->setPosition({m_size.width/2, m_size.height/2-5.f});
+        auto add=[&](std::string label,float y,std::function<void()> fn){
+            auto item=CCMenuItemExt::createSpriteExtra(ButtonSprite::create(label.c_str(),"goldFont.fnt","GJ_button_01.png",.62f),[fn](CCObject*){fn();});
+            item->setPosition({0,y});menu->addChild(item);
+        };
+        add(mod->getSettingValue<bool>("smart-controls-enabled")?"Smart Controls: ON":"Smart Controls: OFF",65,[mod]{
+            mod->setSettingValue("smart-controls-enabled",!mod->getSettingValue<bool>("smart-controls-enabled"));
+            FLAlertLayer::create("Smart Controls","Enable state changed. Re-enter a level to refresh.","OK")->show();
         });
-        toggle->setPosition({0,-65.f}); menu->addChild(toggle);
+        add(mod->getSettingValue<bool>("smart-p1-enabled")?"Player 1: ON":"Player 1: OFF",20,[mod]{
+            mod->setSettingValue("smart-p1-enabled",!mod->getSettingValue<bool>("smart-p1-enabled"));
+            FLAlertLayer::create("Smart Controls","Player 1 button toggled. Re-enter a level to refresh.","OK")->show();
+        });
+        add(mod->getSettingValue<bool>("smart-p2-enabled")?"Player 2: ON":"Player 2: OFF",-25,[mod]{
+            mod->setSettingValue("smart-p2-enabled",!mod->getSettingValue<bool>("smart-p2-enabled"));
+            FLAlertLayer::create("Smart Controls","Player 2 button toggled. Re-enter a level to refresh.","OK")->show();
+        });
+        auto adjust=[mod](const char* key,float delta,float min,float max){
+            float v=mod->getSettingValue<float>(key);mod->setSettingValue(key,std::clamp(v+delta,min,max));
+        };
+        add("Button size +", -70,[adjust]{adjust("smart-button-size",.1f,.5f,2.f);});
+        add("Button size -", -108,[adjust]{adjust("smart-button-size",-.1f,.5f,2.f);});
+        add("Opacity +", -146,[adjust]{adjust("smart-button-opacity",.05f,.2f,1.f);});
+        add("Opacity -", -184,[adjust]{adjust("smart-button-opacity",-.05f,.2f,1.f);});
         m_mainLayer->addChild(menu);
         return true;
     }
 public:
     static SmartControlsPopup* create(){auto ret=new SmartControlsPopup();if(ret->init()){ret->autorelease();return ret;}delete ret;return nullptr;}
 };
-
 
 class GlobalProfilesPopup : public Popup {
     static std::vector<std::string> keys() {
