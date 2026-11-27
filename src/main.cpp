@@ -9,6 +9,7 @@
 #include <Geode/binding/LevelInfoLayer.hpp>
 #include <Geode/binding/LevelDownloadDelegate.hpp>
 #include "SequenceRecorder.hpp"
+#include "InstantActions.hpp"
 #include <Geode/modify/UILayer.hpp>
 #include <algorithm>
 #include <cctype>
@@ -104,6 +105,33 @@ void launchTargetLevel(bool practice) {
     scene->addChild(handler);
     manager->m_levelDownloadDelegate = handler;
     manager->downloadLevel(levelID, false);
+}
+}
+
+namespace nkb {
+void launchTargetLevel(bool practice) {
+    ::launchTargetLevel(practice);
+}
+
+void showRecorderButton() {
+    auto play = PlayLayer::get();
+    if (!play || play->getChildByID("new-keybinds-floating-save-menu")) return;
+    auto win = CCDirector::sharedDirector()->getWinSize();
+    auto menu = CCMenu::create();
+    menu->setID("new-keybinds-floating-save-menu");
+    menu->setPosition({0.f, 0.f});
+    auto sprite = ButtonSprite::create("SAVE STEPS", "goldFont.fnt", "GJ_button_06.png", .58f);
+    auto save = CCMenuItemExt::createSpriteExtra(sprite, [](CCObject* sender) {
+        bool saved = saveRecording();
+        if (auto parent = static_cast<CCNode*>(sender)->getParent())
+            parent->setVisible(false);
+        FLAlertLayer::create("New Keybinds",
+            saved ? "Sequence saved. Open Instant Actions to review the recorded steps."
+                  : "No recorded steps were captured.", "OK")->show();
+    });
+    save->setPosition({win.width * .5f, win.height - 30.f});
+    menu->addChild(save);
+    play->addChild(menu, 2000);
 }
 }
 
@@ -231,22 +259,7 @@ class $modify(NewKeybindsUILayer, UILayer) {
 
         createSmartButtons();
 
-        if (nkb::isRecording()) {
-            auto win = CCDirector::sharedDirector()->getWinSize();
-            auto menu = CCMenu::create();
-            menu->setID("new-keybinds-floating-save-menu");
-            menu->setPosition({0.f, 0.f});
-            auto sprite = ButtonSprite::create("SAVE STEPS", "goldFont.fnt", "GJ_button_06.png", .58f);
-            auto save = CCMenuItemExt::createSpriteExtra(sprite, [](CCObject*) {
-                bool saved = nkb::saveRecording();
-                FLAlertLayer::create("New Keybinds",
-                    saved ? "Sequence saved. Open Instant Actions to review the recorded steps."
-                          : "No recorded steps were captured.", "OK")->show();
-            });
-            save->setPosition({win.width * .5f, win.height - 30.f});
-            menu->addChild(save);
-            this->addChild(menu, 2000);
-        }
+        if (nkb::isRecording()) nkb::showRecorderButton();
         return true;
     }
 };
