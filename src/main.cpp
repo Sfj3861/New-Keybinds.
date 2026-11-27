@@ -41,8 +41,9 @@ class $modify(NewKeybindsUILayer, UILayer) {
 
     void forwardBinding(const char* id, enumKeyCodes key) {
         this->addEventListener(KeybindSettingPressedEventV3(Mod::get(), id),
-            [this, key](Keybind const&, bool down, bool repeat, double timestamp) {
+            [this, key, actionID = std::string(id)](Keybind const&, bool down, bool repeat, double timestamp) {
                 if (repeat || !isGameplayLayerActive()) return ListenerResult::Propagate;
+                nkb::recordStep(actionID + (down ? " DOWN" : " UP"));
                 replayVanillaKey(key, down, timestamp);
                 return ListenerResult::Stop;
             });
@@ -50,22 +51,16 @@ class $modify(NewKeybindsUILayer, UILayer) {
 
     void actionBinding(const char* id, std::function<void()> action) {
         this->addEventListener(KeybindSettingPressedEventV3(Mod::get(), id),
-            [action = std::move(action)](Keybind const&, bool down, bool repeat, double) {
+            [action = std::move(action), actionID = std::string(id)](Keybind const&, bool down, bool repeat, double) {
                 if (!down || repeat) return ListenerResult::Propagate;
+                nkb::recordStep(actionID);
                 action();
                 return ListenerResult::Stop;
             });
     }
 
     void openTargetSearch(bool practice) {
-        auto target = Mod::get()->getSettingValue<std::string>("instant-level-id");
-        if (target.empty()) target = "6508283";
-
-        // Honest behavior: the shortcut opens the selected ID's search results.
-        // The user still selects the result and the mode on the level info screen.
-        auto search = GJSearchObject::create(SearchType::Type19, target + "&gameVersion=22");
-        switchToScene(LevelBrowserLayer::scene(search));
-        (void)practice;
+        launchTargetLevel(practice);
     }
 
     void createSmartButtons() {
@@ -87,7 +82,7 @@ class $modify(NewKeybindsUILayer, UILayer) {
 
             auto item = CCMenuItemExt::createSpriteExtra(sprite, [playerTwo](CCObject*) {
                 if (auto* activePlay = PlayLayer::get()) {
-                    // Balanced tap avoids leaving P1/P2 stuck in the pressed state.
+                    nkb::recordStep(playerTwo ? "Smart Controls P2 tap" : "Smart Controls P1 tap");
                     activePlay->queueButton(1, true, playerTwo, 0.0);
                     activePlay->queueButton(1, false, playerTwo, 0.0);
                 }
@@ -115,12 +110,14 @@ class $modify(NewKeybindsUILayer, UILayer) {
         this->addEventListener(KeybindSettingPressedEventV3(Mod::get(), "jump-p1"),
             [layer](Keybind const&, bool down, bool repeat, double timestamp) {
                 if (repeat) return ListenerResult::Propagate;
+                nkb::recordStep(down ? "P1 DOWN" : "P1 UP");
                 layer->queueButton(1, down, false, timestamp);
                 return ListenerResult::Stop;
             });
         this->addEventListener(KeybindSettingPressedEventV3(Mod::get(), "jump-p2"),
             [layer](Keybind const&, bool down, bool repeat, double timestamp) {
                 if (repeat) return ListenerResult::Propagate;
+                nkb::recordStep(down ? "P2 DOWN" : "P2 UP");
                 layer->queueButton(1, down, true, timestamp);
                 return ListenerResult::Stop;
             });
@@ -136,15 +133,45 @@ class $modify(NewKeybindsUILayer, UILayer) {
         });
 
         createSmartButtons();
+
+        if (nkb::isRecording()) {
+            auto win = CCDirector::sharedDirector()->getWinSize();
+            auto menu = CCMenu::create();
+            menu->setID("new-keybinds-floating-save-menu");
+            menu->setPosition({0.f, 0.f});
+            auto sprite = ButtonSprite::create("SAVE STEPS", "goldFont.fnt", "GJ_button_06.png", .58f);
+            auto save = CCMenuItemExt::createSpriteExtra(sprite, [](CCObject*) {
+                bool saved = nkb::saveRecording();
+                FLAlertLayer::create("New Keybinds",
+                    saved ? "Sequence saved. Open Instant Actions to review the recorded steps."
+                          : "No recorded steps were captured.", "OK")->show();
+            });
+            save->setPosition({win.width * .5f, win.height - 30.f});
+            menu->addChild(save);
+            this->addChild(menu, 2000);
+        }
         return true;
     }
 };
+
+// Practice-mode launch is applied after Geometry Dash creates the level through its own Play action.
+class $modify(NewKeybindsPlayLayer, PlayLayer) {
+    bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
+        if (!PlayLayer::init(level, useReplay, dontCreateObjects)) return false;
+        if (s_startPracticeMode) {
+            s_startPracticeMode = false;
+            this->togglePracticeMode(true);
+        }
+        return true;
+    }
+}
 
 // Universal shortcuts are active in menus as well as gameplay.
 $execute {
     static ListenerHandle levelSelect = KeybindSettingPressedEventV3(Mod::get(), "instant-level-select")
         .listen([](Keybind const&, bool down, bool repeat, double) {
             if (!down || repeat) return ListenerResult::Propagate;
+            nkb::recordStep("Open Online Level Browser");
             switchToScene(LevelBrowserLayer::scene(GJSearchObject::create(SearchType::Type19, "")));
             return ListenerResult::Stop;
         });
@@ -152,6 +179,7 @@ $execute {
     static ListenerHandle mainMenu = KeybindSettingPressedEventV3(Mod::get(), "instant-main-menu")
         .listen([](Keybind const&, bool down, bool repeat, double) {
             if (!down || repeat) return ListenerResult::Propagate;
+            nkb::recordStep("Open Main Menu");
             switchToScene(MenuLayer::scene(false));
             return ListenerResult::Stop;
         });
