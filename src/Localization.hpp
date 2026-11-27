@@ -55,7 +55,11 @@ inline std::string tr(std::string_view key) {
         {"Player 2 button enabled.", "Botón del jugador 2 activado."}, {"Player 2 button disabled.", "Botón del jugador 2 desactivado."},
         {"Save Steps", "Guardar pasos"}, {"Capture cancelled.", "Captura cancelada."},
         {"A maximum of 6 keys is allowed per action.", "Se permiten como máximo 6 teclas por acción."},
-        {"Press Set, then press a physical key. Modifiers such as Ctrl/Shift are captured.", "Pulsa Asignar y después una tecla física. También se capturan Ctrl y Shift."}
+        {"Press Set, then press a physical key. Modifiers such as Ctrl/Shift are captured.", "Pulsa Asignar y después una tecla física. También se capturan Ctrl y Shift."},
+        {"Press a key for ", "Pulsa una tecla para "}, {". Escape cancels.", ". Escape cancela."},
+        {"Already assigned to ", "Ya está asignada a "}, {". Choose another key or clear that assignment.", ". Elige otra tecla o borra esa asignación."},
+        {"Saved: ", "Guardado: "}, {"REPLACE mode: the next key replaces this action's keys.", "Modo REEMPLAZAR: la siguiente tecla sustituirá las teclas de esta acción."},
+        {"ADD mode: the next key is appended to this action.", "Modo AÑADIR: la siguiente tecla se añadirá a esta acción."}
     };
     static const std::unordered_map<std::string, std::string> fr = {
         {"Choose a section", "Choisir une section"}, {"Custom Keybinds", "Touches personnalisées"},
@@ -105,7 +109,11 @@ inline std::string tr(std::string_view key) {
         {"Player 2 button enabled.", "Bouton du joueur 2 activé."}, {"Player 2 button disabled.", "Bouton du joueur 2 désactivé."},
         {"Save Steps", "Enregistrer les étapes"}, {"Capture cancelled.", "Capture annulée."},
         {"A maximum of 6 keys is allowed per action.", "6 touches maximum sont autorisées par action."},
-        {"Press Set, then press a physical key. Modifiers such as Ctrl/Shift are captured.", "Appuyez sur Définir puis sur une touche physique. Ctrl et Maj sont également détectés."}
+        {"Press Set, then press a physical key. Modifiers such as Ctrl/Shift are captured.", "Appuyez sur Définir puis sur une touche physique. Ctrl et Maj sont également détectés."},
+        {"Press a key for ", "Appuyez sur une touche pour "}, {". Escape cancels.", ". Échap annule."},
+        {"Already assigned to ", "Déjà attribuée à "}, {". Choose another key or clear that assignment.", ". Choisissez une autre touche ou effacez cette attribution."},
+        {"Saved: ", "Enregistré : "}, {"REPLACE mode: the next key replaces this action's keys.", "Mode REMPLACER : la prochaine touche remplacera celles de cette action."},
+        {"ADD mode: the next key is appended to this action.", "Mode AJOUTER : la prochaine touche sera ajoutée à cette action."}
     };
     static const std::unordered_map<std::string, std::string> ru = {
         {"Choose a section", "Выберите раздел"}, {"Custom Keybinds", "Свои клавиши"},
@@ -155,7 +163,11 @@ inline std::string tr(std::string_view key) {
         {"Player 2 button enabled.", "Кнопка игрока 2 включена."}, {"Player 2 button disabled.", "Кнопка игрока 2 выключена."},
         {"Save Steps", "Сохранить шаги"}, {"Capture cancelled.", "Захват отменён."},
         {"A maximum of 6 keys is allowed per action.", "Для одного действия разрешено не более 6 клавиш."},
-        {"Press Set, then press a physical key. Modifiers such as Ctrl/Shift are captured.", "Нажмите Назначить, затем физическую клавишу. Ctrl и Shift тоже учитываются."}
+        {"Press Set, then press a physical key. Modifiers such as Ctrl/Shift are captured.", "Нажмите Назначить, затем физическую клавишу. Ctrl и Shift тоже учитываются."},
+        {"Press a key for ", "Нажмите клавишу для "}, {". Escape cancels.", ". Esc отменяет."},
+        {"Already assigned to ", "Уже назначено для "}, {". Choose another key or clear that assignment.", ". Выберите другую клавишу или удалите назначение."},
+        {"Saved: ", "Сохранено: "}, {"REPLACE mode: the next key replaces this action's keys.", "Режим ЗАМЕНЫ: следующая клавиша заменит назначенные клавиши."},
+        {"ADD mode: the next key is appended to this action.", "Режим ДОБАВЛЕНИЯ: следующая клавиша добавится к действию."}
     };
     const std::unordered_map<std::string, std::string>* table = nullptr;
     if (lang == "es") table = &es;
