@@ -187,6 +187,15 @@
         "F6"
       ]
     },
+    "replay-sequence": {
+      "name": "Replay Saved Sequence",
+      "description": "Starts playback of the saved sequence in the current level.",
+      "type": "keybind",
+      "category": "gameplay",
+      "default": [
+        "F7"
+      ]
+    },
     "instant-level-id": {
       "name": "Target Level ID",
       "description": "Level ID used by direct Normal and Practice launch actions.",
