@@ -848,7 +848,7 @@ public:
 class NewKeybindsHubPopup : public Popup {
 protected:
     bool init() override {
-        if (!Popup::init(350.f, 310.f)) return false;
+        if (!Popup::init(370.f, 340.f)) return false;
         setTitle("New Keybinds");
 
         auto subtitle = CCLabelBMFont::create(nkb::tr("Choose a section").c_str(), "goldFont.fnt");
@@ -866,6 +866,21 @@ protected:
             [] { SmartControlsPopup::create()->show(); }, .62f, "GJ_button_03.png");
         addButton(menu, nkb::tr("Global Profiles"), {0.f, -71.f},
             [] { GlobalProfilesPopup::create()->show(); }, .62f, "GJ_button_04.png");
+
+        auto languageLabel = CCLabelBMFont::create(nkb::tr("Language").c_str(), "goldFont.fnt");
+        languageLabel->setScale(.30f);
+        languageLabel->setPosition({m_size.width / 2.f, 42.f});
+        m_mainLayer->addChild(languageLabel);
+
+        auto setLanguage = [this](std::string language) {
+            Mod::get()->setSavedValue("ui-language", language);
+            this->onClose(nullptr);
+            NewKeybindsHubPopup::create()->show();
+        };
+        addButton(menu, "EN", {-120.f, -122.f}, [setLanguage] { setLanguage("en"); }, .32f, "GJ_button_01.png");
+        addButton(menu, "ES", {-40.f, -122.f}, [setLanguage] { setLanguage("es"); }, .32f, "GJ_button_02.png");
+        addButton(menu, "FR", {40.f, -122.f}, [setLanguage] { setLanguage("fr"); }, .32f, "GJ_button_03.png");
+        addButton(menu, "RU", {120.f, -122.f}, [setLanguage] { setLanguage("ru"); }, .32f, "GJ_button_04.png");
         m_mainLayer->addChild(menu);
         return true;
     }
@@ -899,7 +914,8 @@ $execute {
             auto logo = createModLogo(Mod::get());
             if (!logo) return ListenerResult::Propagate;
 
-            auto button = CCMenuItemExt::createSpriteExtra(logo, [](CCObject*) {
+            auto circle = CircleButtonSprite::create(logo, CircleBaseColor::Green, CircleBaseSize::Small);
+            auto button = CCMenuItemExt::createSpriteExtra(circle, [](CCObject*) {
                 NewKeybindsHubPopup::create()->show();
             });
             button->setID("new-keybinds-library-button");
