@@ -714,7 +714,7 @@ protected:
         refreshList();
 
         auto menu = CCMenu::create();
-        menu->setPosition({m_size.width / 2.f, 67.f});
+        menu->setPosition({m_size.width / 2.f, 55.f});
         auto record = CCMenuItemExt::createSpriteExtra(
             ButtonSprite::create(nkb::tr("Start Recording").c_str(), "goldFont.fnt", "GJ_button_01.png", .52f),
             [this](CCObject*) {
@@ -733,8 +733,14 @@ protected:
                     m_status->setString(nkb::tr("Recording started. Play, then tap the red floating button to save.").c_str());
                 }
             });
-        record->setPosition({-90.f, 0.f});
+        record->setPosition({-105.f, -35.f});
         menu->addChild(record);
+
+        auto replay = CCMenuItemExt::createSpriteExtra(
+            ButtonSprite::create(nkb::tr("Replay Sequence").c_str(), "goldFont.fnt", "GJ_button_02.png", .47f),
+            [](CCObject*) { nkb::replaySequence(); });
+        replay->setPosition({0.f, -35.f});
+        menu->addChild(replay);
 
         auto clear = CCMenuItemExt::createSpriteExtra(
             ButtonSprite::create(nkb::tr("Clear Saved Steps").c_str(), "goldFont.fnt", "GJ_button_06.png", .47f),
@@ -743,7 +749,7 @@ protected:
                 refreshList();
                 m_status->setString(nkb::tr("No steps recorded yet.").c_str());
             });
-        clear->setPosition({100.f, 0.f});
+        clear->setPosition({105.f, -35.f});
         menu->addChild(clear);
 
         m_status = CCLabelBMFont::create(
